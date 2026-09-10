@@ -1,0 +1,437 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { User, Game, Order, WebsiteSettings, NotificationItem, UserRole } from '../types';
+import { api } from '../lib/api';
+
+export type AppView =
+  | 'home'
+  | 'games'
+  | 'cards'
+  | 'game-detail'
+  | 'orders'
+  | 'order-detail'
+  | 'offers'
+  | 'support'
+  | 'profile'
+  | 'legal'
+  | 'admin';
+
+export type AdminTab =
+  | 'dashboard'
+  | 'orders'
+  | 'catalogs'
+  | 'games'
+  | 'packages'
+  | 'payment-methods'
+  | 'promo-codes'
+  | 'offers'
+  | 'support'
+  | 'audit-logs'
+  | 'settings';
+
+interface Toast {
+  id: string;
+  type: 'success' | 'error' | 'warning' | 'info';
+  message: string;
+}
+
+export const defaultSiteSettings: WebsiteSettings = {
+  websiteName: 'GamingZone Top-up Center',
+  siteName: 'GamingZone Top-up Center',
+  siteSubtitle: 'Nepal’s #1 Trusted Game Top-Up Marketplace',
+  contactEmail: 'support@gamingzone.com.np',
+  supportEmail: 'support@gamingzone.com.np',
+  supportPhone: '+977 9801234567',
+  whatsappNumber: '+9779801234567',
+  supportWhatsApp: '+977 9801234567',
+  whatsappLink: 'https://wa.me/9779801234567?text=Hi%20GamingZone%20Team%2C%20I%20need%20assistance%20with%20my%20order',
+  telegramLink: 'https://t.me/GamingZoneNepal',
+  facebookLink: 'https://facebook.com/GamingZoneNepalOfficial',
+  currency: 'NPR',
+  currencySymbol: 'NPR ',
+  orderProcessingNotice: 'All top-ups are manually processed by our operations team in Kathmandu within 5 to 20 minutes of payment verification.',
+  announcementBanner: '⚡ Festival Bonanza: Get Up to 20% Extra UC & Diamonds with eSewa/Khalti!',
+  maintenanceMode: false,
+  minOrderAmount: 50,
+  supportHours: '8:00 AM – 11:30 PM NST (7 Days a Week)',
+  operatingHours: '8:00 AM – 11:30 PM NST (Kathmandu)'
+};
+
+interface AppContextType {
+  user: User | null;
+  setUser: (user: User | null) => void;
+  switchRole: (role: UserRole) => void;
+  view: AppView;
+  setView: (view: AppView) => void;
+  adminTab: AdminTab;
+  setAdminTab: (tab: AdminTab) => void;
+  selectedGame: Game | null;
+  setSelectedGame: (game: Game | null) => void;
+  selectedOrderId: string | null;
+  setSelectedOrderId: (orderId: string | null) => void;
+  legalTab: 'terms' | 'privacy' | 'refund' | 'manual-payment' | 'about';
+  setLegalTab: (tab: 'terms' | 'privacy' | 'refund' | 'manual-payment' | 'about') => void;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  selectedCategory: string;
+  setSelectedCategory: (cat: string) => void;
+  catalogTab: 'game' | 'card';
+  setCatalogTab: (tab: 'game' | 'card') => void;
+  selectedCatalog: string;
+  setSelectedCatalog: (slug: string) => void;
+  authModalOpen: boolean;
+  setAuthModalOpen: (open: boolean) => void;
+  orderLookupOpen: boolean;
+  setOrderLookupOpen: (open: boolean) => void;
+  notificationsOpen: boolean;
+  setNotificationsOpen: (open: boolean) => void;
+  notifications: NotificationItem[];
+  unreadNotifsCount: number;
+  refreshNotifications: () => void;
+  settings: WebsiteSettings;
+  siteSettings: WebsiteSettings;
+  setSiteSettings: React.Dispatch<React.SetStateAction<WebsiteSettings>>;
+  refreshSettings: () => void;
+  toasts: Toast[];
+  addToast: (message: string, type?: Toast['type']) => void;
+  removeToast: (id: string) => void;
+  navigateToGame: (game: Game) => void;
+  navigateToOrder: (orderId: string) => void;
+}
+
+const AppContext = createContext<AppContextType | undefined>(undefined);
+
+export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Default to demo customer for immediate high-touch preview, can switch freely
+  const [user, setUser] = useState<User | null>({
+    id: 'usr-demo-customer',
+    name: 'Aayush Maharjan',
+    email: 'demo@gamingzone.com.np',
+    phone: '+977 9841234567',
+    photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+    authProvider: 'email',
+    role: 'CUSTOMER',
+    status: 'active',
+    createdAt: '2026-03-01T00:00:00Z',
+    updatedAt: '2026-09-10T00:00:00Z'
+  });
+
+  const [view, setView] = useState<AppView>('home');
+  const [adminTab, setAdminTab] = useState<AdminTab>('dashboard');
+  const [selectedGame, setSelectedGame] = useState<Game | null>(null);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [legalTab, setLegalTab] = useState<'terms' | 'privacy' | 'refund' | 'manual-payment' | 'about'>('manual-payment');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [catalogTab, setCatalogTab] = useState<'game' | 'card'>('game');
+  const [selectedCatalog, setSelectedCatalog] = useState<string>('all');
+
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [orderLookupOpen, setOrderLookupOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [settings, setSettings] = useState<WebsiteSettings>(defaultSiteSettings);
+  const [toasts, setToasts] = useState<Toast[]>([]);
+
+  const addToast = (message: string, type: Toast['type'] = 'info') => {
+    const id = `toast-${Date.now()}-${Math.random()}`;
+    setToasts(prev => [...prev, { id, type, message }]);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 4500);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  };
+
+  const refreshNotifications = async () => {
+    try {
+      if (user) {
+        const notifs = await api.getNotifications(user.id);
+        setNotifications(notifs);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const refreshSettings = async () => {
+    try {
+      const s = await api.getSettings();
+      if (s) {
+        setSettings(prev => ({ ...prev, ...s }));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    refreshSettings();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      refreshNotifications();
+    }
+  }, [user]);
+
+  // --- URL Routing and History Synchronization ---
+  const parsePath = (pathname: string) => {
+    const clean = pathname.replace(/^\/+|\/+$/g, '');
+    if (!clean || clean === 'home') return { view: 'home' as AppView };
+    if (clean === 'games') return { view: 'games' as AppView };
+    if (clean === 'cards') return { view: 'cards' as AppView };
+    if (clean.startsWith('games/')) {
+      const slug = clean.replace('games/', '');
+      return { view: 'game-detail' as AppView, gameSlug: slug };
+    }
+    if (clean === 'orders') return { view: 'orders' as AppView };
+    if (clean.startsWith('orders/')) {
+      const orderId = clean.replace('orders/', '');
+      return { view: 'order-detail' as AppView, orderId };
+    }
+    if (clean === 'offers') return { view: 'offers' as AppView };
+    if (clean === 'support') return { view: 'support' as AppView };
+    if (clean === 'profile') return { view: 'profile' as AppView };
+    if (clean.startsWith('legal')) {
+      const parts = clean.split('/');
+      return { view: 'legal' as AppView, legalTab: (parts[1] || 'manual-payment') as any };
+    }
+    if (clean.startsWith('admin')) {
+      const parts = clean.split('/');
+      return { view: 'admin' as AppView, adminTab: (parts[1] || 'dashboard') as AdminTab };
+    }
+    return { view: 'home' as AppView };
+  };
+
+  const getPathForView = (
+    v: AppView,
+    aTab: AdminTab,
+    gameSlug?: string,
+    ordId?: string | null,
+    legTab?: string
+  ) => {
+    if (v === 'home') return '/';
+    if (v === 'games') return '/games';
+    if (v === 'cards') return '/cards';
+    if (v === 'game-detail' && gameSlug) return `/games/${gameSlug}`;
+    if (v === 'orders') return '/orders';
+    if (v === 'order-detail' && ordId) return `/orders/${ordId}`;
+    if (v === 'offers') return '/offers';
+    if (v === 'support') return '/support';
+    if (v === 'profile') return '/profile';
+    if (v === 'legal') return `/legal/${legTab || 'manual-payment'}`;
+    if (v === 'admin') return `/admin/${aTab || 'dashboard'}`;
+    return '/';
+  };
+
+  // Sync initial URL on mount and handle back/forward browser popstate
+  useEffect(() => {
+    const syncFromUrl = () => {
+      const parsed = parsePath(window.location.pathname);
+      setView(parsed.view);
+      if (parsed.adminTab) setAdminTab(parsed.adminTab);
+      if (parsed.orderId) setSelectedOrderId(parsed.orderId);
+      if (parsed.legalTab) setLegalTab(parsed.legalTab);
+      if (parsed.gameSlug) {
+        api.getGames().then(games => {
+          const found = games.find(g => g.slug === parsed.gameSlug || g.id === parsed.gameSlug);
+          if (found) setSelectedGame(found);
+        }).catch(console.error);
+      }
+    };
+
+    syncFromUrl();
+
+    const handlePopState = () => {
+      syncFromUrl();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const handleSetView = (newView: AppView) => {
+    setView(newView);
+    const path = getPathForView(newView, adminTab, selectedGame?.slug || selectedGame?.id, selectedOrderId, legalTab);
+    if (window.location.pathname !== path) {
+      window.history.pushState(null, '', path);
+    }
+  };
+
+  const handleSetAdminTab = (newTab: AdminTab) => {
+    setAdminTab(newTab);
+    if (view === 'admin') {
+      const path = `/admin/${newTab}`;
+      if (window.location.pathname !== path) {
+        window.history.pushState(null, '', path);
+      }
+    }
+  };
+
+  const handleSetLegalTab = (tab: any) => {
+    setLegalTab(tab);
+    if (view === 'legal') {
+      const path = `/legal/${tab}`;
+      if (window.location.pathname !== path) {
+        window.history.pushState(null, '', path);
+      }
+    }
+  };
+
+  const unreadNotifsCount = notifications.filter(n => !n.read).length;
+
+  const navigateToGame = (game: Game) => {
+    setSelectedGame(game);
+    setView('game-detail');
+    const path = `/games/${game.slug || game.id}`;
+    if (window.location.pathname !== path) {
+      window.history.pushState(null, '', path);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToOrder = (orderId: string) => {
+    setSelectedOrderId(orderId);
+    setView('order-detail');
+    const path = `/orders/${orderId}`;
+    if (window.location.pathname !== path) {
+      window.history.pushState(null, '', path);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const switchRole = (role: UserRole) => {
+    if (role === 'CUSTOMER') {
+      setUser({
+        id: 'usr-demo-customer',
+        name: 'Aayush Maharjan (Customer)',
+        email: 'demo@gamingzone.com.np',
+        phone: '+977 9841234567',
+        photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+        authProvider: 'email',
+        role: 'CUSTOMER',
+        status: 'active',
+        createdAt: '2026-03-01T00:00:00Z',
+        updatedAt: '2026-09-10T00:00:00Z'
+      });
+      addToast('Switched to Customer mode', 'info');
+      // If currently on admin page, immediately redirect away to customer storefront
+      if (view === 'admin') {
+        handleSetView('home');
+      }
+    } else if (role === 'SUPER_ADMIN') {
+      setUser({
+        id: 'usr-admin-1',
+        name: 'Suman Shrestha (Super Admin)',
+        email: 'admin@gamingzone.com.np',
+        phone: '+977 9841000001',
+        photoUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+        authProvider: 'email',
+        role: 'SUPER_ADMIN',
+        status: 'active',
+        createdAt: '2026-01-01T00:00:00Z',
+        updatedAt: '2026-09-10T00:00:00Z'
+      });
+      addToast('Switched to Super Admin mode (Full access)', 'success');
+    } else if (role === 'ORDER_MANAGER') {
+      setUser({
+        id: 'usr-mgr-1',
+        name: 'Bikash Thapa (Order Manager)',
+        email: 'manager@gamingzone.com.np',
+        phone: '+977 9841000002',
+        photoUrl: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80',
+        authProvider: 'email',
+        role: 'ORDER_MANAGER',
+        status: 'active',
+        createdAt: '2026-02-01T00:00:00Z',
+        updatedAt: '2026-09-10T00:00:00Z'
+      });
+      addToast('Switched to Order Manager mode', 'info');
+    } else if (role === 'CONTENT_MANAGER') {
+      setUser({
+        id: 'usr-cnt-1',
+        name: 'Rohan Gurung (Content Manager)',
+        email: 'content@gamingzone.com.np',
+        phone: '+977 9841000003',
+        photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+        authProvider: 'email',
+        role: 'CONTENT_MANAGER',
+        status: 'active',
+        createdAt: '2026-02-01T00:00:00Z',
+        updatedAt: '2026-09-10T00:00:00Z'
+      });
+      addToast('Switched to Content Manager mode', 'info');
+    } else if (role === 'SUPPORT_AGENT') {
+      setUser({
+        id: 'usr-sup-1',
+        name: 'Pooja Karki (Support Agent)',
+        email: 'support@gamingzone.com.np',
+        phone: '+977 9841000004',
+        photoUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
+        authProvider: 'email',
+        role: 'SUPPORT_AGENT',
+        status: 'active',
+        createdAt: '2026-02-01T00:00:00Z',
+        updatedAt: '2026-09-10T00:00:00Z'
+      });
+      addToast('Switched to Support Agent mode', 'info');
+    }
+  };
+
+  return (
+    <AppContext.Provider
+      value={{
+        user,
+        setUser,
+        switchRole,
+        view,
+        setView: handleSetView,
+        adminTab,
+        setAdminTab: handleSetAdminTab,
+        selectedGame,
+        setSelectedGame,
+        selectedOrderId,
+        setSelectedOrderId,
+        legalTab,
+        setLegalTab: handleSetLegalTab,
+        searchQuery,
+        setSearchQuery,
+        selectedCategory,
+        setSelectedCategory,
+        catalogTab,
+        setCatalogTab,
+        selectedCatalog,
+        setSelectedCatalog,
+        authModalOpen,
+        setAuthModalOpen,
+        orderLookupOpen,
+        setOrderLookupOpen,
+        notificationsOpen,
+        setNotificationsOpen,
+        notifications,
+        unreadNotifsCount,
+        refreshNotifications,
+        settings,
+        siteSettings: settings,
+        setSiteSettings: setSettings,
+        refreshSettings,
+        toasts,
+        addToast,
+        removeToast,
+        navigateToGame,
+        navigateToOrder
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+
+export const useApp = () => {
+  const ctx = useContext(AppContext);
+  if (!ctx) throw new Error('useApp must be used within AppProvider');
+  return ctx;
+};

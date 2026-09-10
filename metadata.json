@@ -1,0 +1,8 @@
+{
+  "name": "GamingZone Top-up Center",
+  "description": "Nepal's premier gaming top-up marketplace for PUBG Mobile, Free Fire, MLBB, Roblox, Genshin Impact, and more with manual NPR payment processing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

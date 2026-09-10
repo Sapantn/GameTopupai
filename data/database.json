@@ -1,0 +1,1282 @@
+{
+  "games": [
+    {
+      "id": "game-pubg",
+      "slug": "pubg-mobile",
+      "name": "PUBG Mobile",
+      "description": "Instant manual top-up for PUBG Mobile Unknown Cash (UC). Fast delivery to your Player ID within 5-15 minutes.",
+      "logoUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/6d/98/24/6d9824dd-f75f-9bd6-221e-33324fedecb2/AppIcon-0-0-1x_U007emarketing-0-7-0-85-220.png/512x512bb.jpg",
+      "bannerUrl": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/12/44/11/124411bd-7435-f006-e5b7-6203ada37693/0.jpg/1200x675bb.jpg",
+      "instructions": "1. Open PUBG Mobile -> Tap your profile avatar at top-right.\n2. Locate your 9-11 digit numeric Character ID (e.g. 5123948291).\n3. Copy and paste exactly into the Player ID field below.\n4. Ensure your character name matches.",
+      "featured": true,
+      "popular": true,
+      "active": true,
+      "sortOrder": 1,
+      "category": "Battle Royale",
+      "fields": [
+        {
+          "id": "f-pubg-1",
+          "gameId": "game-pubg",
+          "label": "Character / Player ID",
+          "fieldName": "playerId",
+          "fieldType": "number",
+          "required": true,
+          "placeholder": "e.g. 5123948291",
+          "helpText": "Your numerical Player ID found in your in-game profile",
+          "validationRegex": "^[0-9]{8,12}$",
+          "sortOrder": 1
+        },
+        {
+          "id": "f-pubg-2",
+          "gameId": "game-pubg",
+          "label": "In-Game Nickname (Optional)",
+          "fieldName": "nickname",
+          "fieldType": "text",
+          "required": false,
+          "placeholder": "e.g. GhostSniper_NP",
+          "helpText": "Helps us verify your account before dispatching UC",
+          "sortOrder": 2
+        }
+      ]
+    },
+    {
+      "id": "game-freefire",
+      "slug": "free-fire",
+      "name": "Free Fire",
+      "description": "Top up Free Fire Diamonds with instant manual verification in Nepal. Get bonus diamonds and weekly/monthly passes.",
+      "logoUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/95/16/f3/9516f314-4151-38f7-7d61-47bbc24f5406/AppIcon-1785257489-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg",
+      "bannerUrl": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/4d/de/b0/4ddeb015-7316-b915-8202-fff9224030ec/2208x1242.jpg/1200x675bb.jpg",
+      "instructions": "1. Open Garena Free Fire -> Click your profile banner in the top-left corner.\n2. Your Player UID is visible below your nickname (e.g. 2938472918).\n3. Enter the numeric UID carefully.",
+      "featured": true,
+      "popular": true,
+      "active": true,
+      "sortOrder": 2,
+      "category": "Battle Royale",
+      "fields": [
+        {
+          "id": "f-ff-1",
+          "gameId": "game-freefire",
+          "label": "Player UID",
+          "fieldName": "playerId",
+          "fieldType": "number",
+          "required": true,
+          "placeholder": "e.g. 2938472918",
+          "helpText": "Your numeric Garena Free Fire UID",
+          "validationRegex": "^[0-9]{8,12}$",
+          "sortOrder": 1
+        },
+        {
+          "id": "f-ff-2",
+          "gameId": "game-freefire",
+          "label": "Account Region",
+          "fieldName": "region",
+          "fieldType": "dropdown",
+          "options": [
+            "Nepal / India Server",
+            "Singapore Server",
+            "Other"
+          ],
+          "required": true,
+          "placeholder": "Select Server Region",
+          "helpText": "Choose your in-game registered server",
+          "sortOrder": 2
+        }
+      ]
+    },
+    {
+      "id": "game-mlbb",
+      "slug": "mobile-legends",
+      "name": "Mobile Legends: Bang Bang",
+      "description": "Recharge MLBB Diamonds & Twilight Pass directly to your User ID and Zone ID. 100% safe, official Nepal payment.",
+      "logoUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8d/72/30/8d72307c-25c0-6391-ab4f-86ff1a9d3fe6/AppIcon-0-0-1x_U007emarketing-0-7-0-85-220.png/512x512bb.jpg",
+      "bannerUrl": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/22/ff/5f/22ff5f86-b3fe-ce72-93b9-acc67f1aa1b1/2688x1242.jpg/1200x675bb.jpg",
+      "instructions": "1. Open Mobile Legends -> Click your avatar in top-left.\n2. Under your nickname you will see User ID and Zone ID in parenthesis, e.g. 12345678 (2048).\n3. Enter User ID in first field and 4-5 digit Zone ID in second field.",
+      "featured": true,
+      "popular": true,
+      "active": true,
+      "sortOrder": 3,
+      "category": "MOBA",
+      "fields": [
+        {
+          "id": "f-ml-1",
+          "gameId": "game-mlbb",
+          "label": "User ID",
+          "fieldName": "userId",
+          "fieldType": "number",
+          "required": true,
+          "placeholder": "e.g. 12345678",
+          "helpText": "Main numeric User ID",
+          "validationRegex": "^[0-9]{6,12}$",
+          "sortOrder": 1
+        },
+        {
+          "id": "f-ml-2",
+          "gameId": "game-mlbb",
+          "label": "Zone / Server ID",
+          "fieldName": "zoneId",
+          "fieldType": "number",
+          "required": true,
+          "placeholder": "e.g. 2048",
+          "helpText": "The 4-5 digit number in brackets next to User ID",
+          "validationRegex": "^[0-9]{3,6}$",
+          "sortOrder": 2
+        }
+      ]
+    },
+    {
+      "id": "game-codm",
+      "slug": "call-of-duty-mobile",
+      "name": "Call of Duty Mobile",
+      "description": "Get COD Points (CP) for Battle Pass, Lucky Draws, and weapon crates in Nepal with instant NPR payment.",
+      "logoUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/bc/66/35/bc6635d9-68f4-6ab5-969f-92e034a50cfa/AppIcon-0-0-1x_U007emarketing-0-10-0-85-220.png/512x512bb.jpg",
+      "bannerUrl": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/b5/07/43/b5074339-216d-9190-2ba2-1c2162174abc/CODM_Purple_2688x1242.png/1200x675bb.jpg",
+      "instructions": "1. Open COD Mobile -> Go to Settings -> Legal and Privacy.\n2. Copy your numeric Player ID (or Open Profile -> Basic Info and copy numeric UID).\n3. Paste the UID here.",
+      "featured": false,
+      "popular": true,
+      "active": true,
+      "sortOrder": 4,
+      "category": "Action",
+      "fields": [
+        {
+          "id": "f-codm-1",
+          "gameId": "game-codm",
+          "label": "Player UID",
+          "fieldName": "playerId",
+          "fieldType": "number",
+          "required": true,
+          "placeholder": "e.g. 67491823901923",
+          "helpText": "Your COD Mobile Player UID",
+          "validationRegex": "^[0-9]{10,20}$",
+          "sortOrder": 1
+        }
+      ]
+    },
+    {
+      "id": "game-efootball",
+      "slug": "efootball",
+      "name": "eFootball 2026",
+      "description": "Buy eFootball Coins to sign Epic cards, Showtime players, and Manager Packs safely using eSewa & Khalti.",
+      "logoUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/50/8c/42/508c42ee-b55e-375a-63dc-158374da9693/PesMobile-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg",
+      "bannerUrl": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/38/eb/c0/38ebc0d7-8716-4053-b615-34f9a7c80a3f/2868x1320_USA_01.jpg/1200x675bb.jpg",
+      "instructions": "1. Open eFootball -> Extras -> User Information -> User Details.\n2. Copy your Konami ID or Owner ID.\n3. Enter the ID in the input box.",
+      "featured": false,
+      "popular": false,
+      "active": true,
+      "sortOrder": 5,
+      "category": "Sports",
+      "fields": [
+        {
+          "id": "f-ef-1",
+          "gameId": "game-efootball",
+          "label": "Owner ID / Konami ID",
+          "fieldName": "ownerId",
+          "fieldType": "text",
+          "required": true,
+          "placeholder": "e.g. 192-384-912 or user@email.com",
+          "helpText": "Your registered Owner ID or linked Konami account email",
+          "sortOrder": 1
+        }
+      ]
+    },
+    {
+      "id": "game-roblox",
+      "slug": "roblox",
+      "name": "Roblox",
+      "description": "Instant Robux top-ups and Game Passes. Safe manual transfer via private server or VIP gamepass method.",
+      "logoUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/73/f6/b9/73f6b9d7-6a5c-e9db-57d6-dd82f64038f3/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg",
+      "bannerUrl": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/44/6e/a8/446ea852-2d09-c4c2-5cbf-cbeca590a42f/ASO_Q1_26_Default_EEAO_2602_Apple_iPhone_SC1-RIVALS.jpg/1200x675bb.jpg",
+      "instructions": "1. Enter your exact Roblox Username (NOT display name).\n2. Ensure your account is at least 30 days old.\n3. Admin will send Robux via Gamepass or Group payout.",
+      "featured": true,
+      "popular": true,
+      "active": true,
+      "sortOrder": 6,
+      "category": "Sandbox",
+      "fields": [
+        {
+          "id": "f-rbx-1",
+          "gameId": "game-roblox",
+          "label": "Roblox Username",
+          "fieldName": "username",
+          "fieldType": "text",
+          "required": true,
+          "placeholder": "e.g. NepalGamer99",
+          "helpText": "Your primary account username without @ symbol",
+          "sortOrder": 1
+        }
+      ]
+    },
+    {
+      "id": "game-genshin",
+      "slug": "genshin-impact",
+      "name": "Genshin Impact",
+      "description": "Blessing of the Welkin Moon & Genesis Crystals top-up. 100% official direct UID top-up without account login.",
+      "logoUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/8d/7c/a8/8d7ca8b3-b2b6-b321-269d-99ed904989ea/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
+      "bannerUrl": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/67/34/c5/6734c518-9868-e282-2904-493f828b14eb/EN-2796x1290-_U65e0logo.jpg/1200x675bb.jpg",
+      "instructions": "1. Open Genshin Impact -> View your 9-digit UID at the bottom-right corner of the screen.\n2. Select your exact server region (Asia, America, Europe, TW/HK/MO).",
+      "featured": false,
+      "popular": true,
+      "active": true,
+      "sortOrder": 7,
+      "category": "RPG",
+      "fields": [
+        {
+          "id": "f-gen-1",
+          "gameId": "game-genshin",
+          "label": "Account UID",
+          "fieldName": "uid",
+          "fieldType": "number",
+          "required": true,
+          "placeholder": "e.g. 812938491",
+          "helpText": "9-digit UID shown on game screen",
+          "validationRegex": "^[0-9]{9}$",
+          "sortOrder": 1
+        },
+        {
+          "id": "f-gen-2",
+          "gameId": "game-genshin",
+          "label": "Server Region",
+          "fieldName": "server",
+          "fieldType": "dropdown",
+          "options": [
+            "Asia",
+            "America",
+            "Europe",
+            "TW, HK, MO"
+          ],
+          "required": true,
+          "placeholder": "Select Server",
+          "helpText": "Choose the server your account is hosted on",
+          "sortOrder": 2
+        }
+      ]
+    },
+    {
+      "id": "game-hok",
+      "slug": "honor-of-kings",
+      "name": "Honor of Kings",
+      "description": "Top up Honor of Kings Tokens in Nepal. Fast manual fulfillment directly to your Player UID.",
+      "logoUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/6c/9c/73/6c9c73a3-b6d8-6f98-a7c2-00de2f82a240/AppIcon-1x_U007emarketing-0-7-0-85-220-0.png/512x512bb.jpg",
+      "bannerUrl": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/08/61/e2/0861e22f-2249-6530-f1da-7110f87f5d75/0.jpg/1200x675bb.jpg",
+      "instructions": "1. Open Honor of Kings -> Tap your profile icon.\n2. Copy your numeric UID from the profile overview.\n3. Paste below.",
+      "featured": false,
+      "popular": false,
+      "active": true,
+      "sortOrder": 8,
+      "category": "MOBA",
+      "fields": [
+        {
+          "id": "f-hok-1",
+          "gameId": "game-hok",
+          "label": "Player UID",
+          "fieldName": "playerId",
+          "fieldType": "number",
+          "required": true,
+          "placeholder": "e.g. 918237192",
+          "helpText": "Numeric UID from in-game profile",
+          "sortOrder": 1
+        }
+      ]
+    }
+  ],
+  "packages": [
+    {
+      "id": "pkg-pubg-60",
+      "gameId": "game-pubg",
+      "name": "60 UC",
+      "amount": "60 UC",
+      "originalPrice": 160,
+      "price": 145,
+      "discount": 9,
+      "active": true,
+      "sortOrder": 1
+    },
+    {
+      "id": "pkg-pubg-325",
+      "gameId": "game-pubg",
+      "name": "325 UC",
+      "amount": "325 UC",
+      "originalPrice": 750,
+      "price": 680,
+      "discount": 9,
+      "active": true,
+      "sortOrder": 2,
+      "badge": "Popular"
+    },
+    {
+      "id": "pkg-pubg-660",
+      "gameId": "game-pubg",
+      "name": "660 UC (Royal Pass)",
+      "amount": "660 UC",
+      "originalPrice": 1500,
+      "price": 1350,
+      "discount": 10,
+      "active": true,
+      "sortOrder": 3,
+      "badge": "Best Seller"
+    },
+    {
+      "id": "pkg-pubg-1800",
+      "gameId": "game-pubg",
+      "name": "1800 UC",
+      "amount": "1800 UC",
+      "originalPrice": 3900,
+      "price": 3490,
+      "discount": 11,
+      "active": true,
+      "sortOrder": 4
+    },
+    {
+      "id": "pkg-pubg-3850",
+      "gameId": "game-pubg",
+      "name": "3850 UC",
+      "amount": "3850 UC",
+      "originalPrice": 8000,
+      "price": 7190,
+      "discount": 10,
+      "active": true,
+      "sortOrder": 5
+    },
+    {
+      "id": "pkg-pubg-8100",
+      "gameId": "game-pubg",
+      "name": "8100 UC (Mega Pack)",
+      "amount": "8100 UC",
+      "originalPrice": 16500,
+      "price": 14890,
+      "discount": 10,
+      "active": true,
+      "sortOrder": 6,
+      "badge": "Huge Value"
+    },
+    {
+      "id": "pkg-ff-110",
+      "gameId": "game-freefire",
+      "name": "100 + 10 Bonus Diamonds",
+      "amount": "110 Diamonds",
+      "originalPrice": 135,
+      "price": 115,
+      "discount": 15,
+      "active": true,
+      "sortOrder": 1
+    },
+    {
+      "id": "pkg-ff-341",
+      "gameId": "game-freefire",
+      "name": "310 + 31 Bonus Diamonds",
+      "amount": "341 Diamonds",
+      "originalPrice": 380,
+      "price": 325,
+      "discount": 14,
+      "active": true,
+      "sortOrder": 2,
+      "badge": "Popular"
+    },
+    {
+      "id": "pkg-ff-572",
+      "gameId": "game-freefire",
+      "name": "520 + 52 Bonus Diamonds",
+      "amount": "572 Diamonds",
+      "originalPrice": 620,
+      "price": 540,
+      "discount": 13,
+      "active": true,
+      "sortOrder": 3
+    },
+    {
+      "id": "pkg-ff-1166",
+      "gameId": "game-freefire",
+      "name": "1060 + 106 Bonus Diamonds",
+      "amount": "1166 Diamonds",
+      "originalPrice": 1250,
+      "price": 1080,
+      "discount": 14,
+      "active": true,
+      "sortOrder": 4,
+      "badge": "Best Value"
+    },
+    {
+      "id": "pkg-ff-weekly",
+      "gameId": "game-freefire",
+      "name": "Weekly Membership Pass",
+      "amount": "Weekly Pass",
+      "originalPrice": 280,
+      "price": 235,
+      "discount": 16,
+      "active": true,
+      "sortOrder": 5,
+      "badge": "Hot"
+    },
+    {
+      "id": "pkg-ff-monthly",
+      "gameId": "game-freefire",
+      "name": "Monthly Membership Pass",
+      "amount": "Monthly Pass",
+      "originalPrice": 1100,
+      "price": 950,
+      "discount": 14,
+      "active": true,
+      "sortOrder": 6
+    },
+    {
+      "id": "pkg-ml-86",
+      "gameId": "game-mlbb",
+      "name": "86 Diamonds (78+8)",
+      "amount": "86 Diamonds",
+      "originalPrice": 210,
+      "price": 185,
+      "discount": 12,
+      "active": true,
+      "sortOrder": 1
+    },
+    {
+      "id": "pkg-ml-172",
+      "gameId": "game-mlbb",
+      "name": "172 Diamonds (156+16)",
+      "amount": "172 Diamonds",
+      "originalPrice": 420,
+      "price": 360,
+      "discount": 14,
+      "active": true,
+      "sortOrder": 2
+    },
+    {
+      "id": "pkg-ml-257",
+      "gameId": "game-mlbb",
+      "name": "257 Diamonds (234+23)",
+      "amount": "257 Diamonds",
+      "originalPrice": 620,
+      "price": 535,
+      "discount": 14,
+      "active": true,
+      "sortOrder": 3,
+      "badge": "Popular"
+    },
+    {
+      "id": "pkg-ml-706",
+      "gameId": "game-mlbb",
+      "name": "706 Diamonds (625+81)",
+      "amount": "706 Diamonds",
+      "originalPrice": 1650,
+      "price": 1440,
+      "discount": 13,
+      "active": true,
+      "sortOrder": 4,
+      "badge": "Best Value"
+    },
+    {
+      "id": "pkg-ml-weekly",
+      "gameId": "game-mlbb",
+      "name": "Weekly Diamond Pass",
+      "amount": "Weekly Pass",
+      "originalPrice": 260,
+      "price": 220,
+      "discount": 15,
+      "active": true,
+      "sortOrder": 5,
+      "badge": "Must Buy"
+    },
+    {
+      "id": "pkg-ml-twilight",
+      "gameId": "game-mlbb",
+      "name": "Twilight Pass",
+      "amount": "Twilight Pass",
+      "originalPrice": 1400,
+      "price": 1220,
+      "discount": 13,
+      "active": true,
+      "sortOrder": 6
+    },
+    {
+      "id": "pkg-cod-80",
+      "gameId": "game-codm",
+      "name": "80 CP",
+      "amount": "80 CP",
+      "originalPrice": 150,
+      "price": 135,
+      "discount": 10,
+      "active": true,
+      "sortOrder": 1
+    },
+    {
+      "id": "pkg-cod-420",
+      "gameId": "game-codm",
+      "name": "420 CP",
+      "amount": "420 CP",
+      "originalPrice": 720,
+      "price": 640,
+      "discount": 11,
+      "active": true,
+      "sortOrder": 2,
+      "badge": "Popular"
+    },
+    {
+      "id": "pkg-cod-880",
+      "gameId": "game-codm",
+      "name": "880 CP (Battle Pass)",
+      "amount": "880 CP",
+      "originalPrice": 1450,
+      "price": 1290,
+      "discount": 11,
+      "active": true,
+      "sortOrder": 3,
+      "badge": "Best Value"
+    },
+    {
+      "id": "pkg-cod-2400",
+      "gameId": "game-codm",
+      "name": "2400 CP",
+      "amount": "2400 CP",
+      "originalPrice": 3800,
+      "price": 3390,
+      "discount": 11,
+      "active": true,
+      "sortOrder": 4
+    },
+    {
+      "id": "pkg-ef-130",
+      "gameId": "game-efootball",
+      "name": "130 eFootball Coins",
+      "amount": "130 Coins",
+      "originalPrice": 190,
+      "price": 165,
+      "discount": 13,
+      "active": true,
+      "sortOrder": 1
+    },
+    {
+      "id": "pkg-ef-550",
+      "gameId": "game-efootball",
+      "name": "550 eFootball Coins",
+      "amount": "550 Coins",
+      "originalPrice": 750,
+      "price": 670,
+      "discount": 11,
+      "active": true,
+      "sortOrder": 2,
+      "badge": "Popular"
+    },
+    {
+      "id": "pkg-ef-1050",
+      "gameId": "game-efootball",
+      "name": "1050 eFootball Coins",
+      "amount": "1050 Coins",
+      "originalPrice": 1450,
+      "price": 1290,
+      "discount": 11,
+      "active": true,
+      "sortOrder": 3,
+      "badge": "Best Value"
+    },
+    {
+      "id": "pkg-ef-2100",
+      "gameId": "game-efootball",
+      "name": "2100 eFootball Coins",
+      "amount": "2100 Coins",
+      "originalPrice": 2800,
+      "price": 2490,
+      "discount": 11,
+      "active": true,
+      "sortOrder": 4
+    },
+    {
+      "id": "pkg-rbx-400",
+      "gameId": "game-roblox",
+      "name": "400 Robux",
+      "amount": "400 Robux",
+      "originalPrice": 720,
+      "price": 650,
+      "discount": 10,
+      "active": true,
+      "sortOrder": 1
+    },
+    {
+      "id": "pkg-rbx-800",
+      "gameId": "game-roblox",
+      "name": "800 Robux",
+      "amount": "800 Robux",
+      "originalPrice": 1420,
+      "price": 1280,
+      "discount": 10,
+      "active": true,
+      "sortOrder": 2,
+      "badge": "Popular"
+    },
+    {
+      "id": "pkg-rbx-1700",
+      "gameId": "game-roblox",
+      "name": "1,700 Robux",
+      "amount": "1700 Robux",
+      "originalPrice": 2950,
+      "price": 2650,
+      "discount": 10,
+      "active": true,
+      "sortOrder": 3,
+      "badge": "Best Value"
+    },
+    {
+      "id": "pkg-rbx-4500",
+      "gameId": "game-roblox",
+      "name": "4,500 Robux",
+      "amount": "4500 Robux",
+      "originalPrice": 7400,
+      "price": 6600,
+      "discount": 11,
+      "active": true,
+      "sortOrder": 4
+    },
+    {
+      "id": "pkg-gen-welkin",
+      "gameId": "game-genshin",
+      "name": "Blessing of the Welkin Moon",
+      "amount": "Welkin Moon (30 Days)",
+      "originalPrice": 750,
+      "price": 660,
+      "discount": 12,
+      "active": true,
+      "sortOrder": 1,
+      "badge": "Top Recommended"
+    },
+    {
+      "id": "pkg-gen-60",
+      "gameId": "game-genshin",
+      "name": "60 Genesis Crystals",
+      "amount": "60 Crystals",
+      "originalPrice": 160,
+      "price": 140,
+      "discount": 12,
+      "active": true,
+      "sortOrder": 2
+    },
+    {
+      "id": "pkg-gen-330",
+      "gameId": "game-genshin",
+      "name": "300 + 30 Bonus Crystals",
+      "amount": "330 Crystals",
+      "originalPrice": 750,
+      "price": 670,
+      "discount": 11,
+      "active": true,
+      "sortOrder": 3
+    },
+    {
+      "id": "pkg-gen-1090",
+      "gameId": "game-genshin",
+      "name": "980 + 110 Bonus Crystals",
+      "amount": "1090 Crystals",
+      "originalPrice": 2200,
+      "price": 1980,
+      "discount": 10,
+      "active": true,
+      "sortOrder": 4,
+      "badge": "Popular"
+    },
+    {
+      "id": "pkg-gen-2240",
+      "gameId": "game-genshin",
+      "name": "1980 + 260 Bonus Crystals",
+      "amount": "2240 Crystals",
+      "originalPrice": 4400,
+      "price": 3950,
+      "discount": 10,
+      "active": true,
+      "sortOrder": 5
+    },
+    {
+      "id": "pkg-hok-80",
+      "gameId": "game-hok",
+      "name": "80 Tokens",
+      "amount": "80 Tokens",
+      "originalPrice": 155,
+      "price": 135,
+      "discount": 13,
+      "active": true,
+      "sortOrder": 1
+    },
+    {
+      "id": "pkg-hok-257",
+      "gameId": "game-hok",
+      "name": "240 + 17 Bonus Tokens",
+      "amount": "257 Tokens",
+      "originalPrice": 460,
+      "price": 410,
+      "discount": 11,
+      "active": true,
+      "sortOrder": 2,
+      "badge": "Popular"
+    },
+    {
+      "id": "pkg-hok-432",
+      "gameId": "game-hok",
+      "name": "400 + 32 Bonus Tokens",
+      "amount": "432 Tokens",
+      "originalPrice": 750,
+      "price": 660,
+      "discount": 12,
+      "active": true,
+      "sortOrder": 3
+    },
+    {
+      "id": "pkg-hok-865",
+      "gameId": "game-hok",
+      "name": "800 + 65 Bonus Tokens",
+      "amount": "865 Tokens",
+      "originalPrice": 1500,
+      "price": 1320,
+      "discount": 12,
+      "active": true,
+      "sortOrder": 4
+    }
+  ],
+  "paymentMethods": [
+    {
+      "id": "pay-esewa",
+      "code": "esewa",
+      "name": "eSewa Mobile Wallet",
+      "logoUrl": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=120&q=80",
+      "accountName": "GamingZone Nepal Pvt Ltd",
+      "accountIdentifier": "9812345678",
+      "qrUrl": "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=esewa://payment?recipient=9812345678&name=GamingZoneNepal",
+      "instructions": "1. Open eSewa app on your phone.\n2. Send exact NPR amount to eSewa ID: 9812345678 (GamingZone Nepal Pvt Ltd).\n3. In remarks, mention your Phone or In-game name.\n4. Take a screenshot of the completed transaction.\n5. Copy the 16-digit Reference Code and submit below.",
+      "active": true,
+      "sortOrder": 1,
+      "badge": "Most Popular in Nepal"
+    },
+    {
+      "id": "pay-khalti",
+      "code": "khalti",
+      "name": "Khalti Digital Wallet",
+      "logoUrl": "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=120&q=80",
+      "accountName": "GamingZone Nepal Pvt Ltd",
+      "accountIdentifier": "9801234567",
+      "qrUrl": "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=khalti://pay?mobile=9801234567&name=GamingZoneNepal",
+      "instructions": "1. Open Khalti App -> Send Money.\n2. Enter Khalti Mobile: 9801234567.\n3. Verify name \"GamingZone Nepal Pvt Ltd\" and send exact NPR.\n4. Note down Khalti Transaction ID and take a screenshot proof.",
+      "active": true,
+      "sortOrder": 2,
+      "badge": "Instant Transfer"
+    },
+    {
+      "id": "pay-fonepay",
+      "code": "fonepay",
+      "name": "Fonepay QR (Any Nepal Banking App)",
+      "logoUrl": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=120&q=80",
+      "accountName": "GamingZone Top-Up Merchant",
+      "accountIdentifier": "Fonepay Merchant ID: 009214",
+      "qrUrl": "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=fonepay://merchant?id=009214&name=GamingZoneNepal",
+      "instructions": "1. Open any Nepal Mobile Banking App (NIC Asia, Nabil, Global IME, Sanima, Everest, etc.).\n2. Tap \"Scan QR\" and scan our Fonepay Merchant QR.\n3. Confirm Merchant: GamingZone Top-Up Merchant.\n4. Pay exact NPR and capture screenshot + Reference Number.",
+      "active": true,
+      "sortOrder": 3,
+      "badge": "All Banks Supported"
+    },
+    {
+      "id": "pay-imepay",
+      "code": "imepay",
+      "name": "IME Pay Wallet",
+      "logoUrl": "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=120&q=80",
+      "accountName": "GamingZone Top-Up IME",
+      "accountIdentifier": "9823456789",
+      "qrUrl": "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=imepay://send?mobile=9823456789&name=GamingZoneNepal",
+      "instructions": "1. Open IME Pay app -> Send Money.\n2. Send to Wallet Number: 9823456789.\n3. Take screenshot and copy the Transaction ID.",
+      "active": true,
+      "sortOrder": 4
+    },
+    {
+      "id": "pay-connectips",
+      "code": "connectips",
+      "name": "ConnectIPS / Bank Transfer",
+      "logoUrl": "https://images.unsplash.com/photo-1501167786227-4cba60f6d58f?auto=format&fit=crop&w=120&q=80",
+      "accountName": "GamingZone Nepal Private Limited",
+      "accountIdentifier": "Bank: NIC Asia Bank | Acc: 019283746501001",
+      "qrUrl": "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=nicasia://acc?019283746501001",
+      "instructions": "Bank: NIC Asia Bank Ltd\nBranch: New Road, Kathmandu\nAccount Name: GamingZone Nepal Private Limited\nAccount Number: 019283746501001\n\nTransfer via ConnectIPS or Mobile Banking, take receipt screenshot.",
+      "active": true,
+      "sortOrder": 5
+    },
+    {
+      "id": "pay-crypto",
+      "code": "crypto",
+      "name": "Cryptocurrency (USDT - TRC20 / BEP20)",
+      "logoUrl": "https://images.unsplash.com/photo-1622979135225-d2ba269bc1df?auto=format&fit=crop&w=120&q=80",
+      "accountName": "GamingZone Nepal USDT Escrow",
+      "accountIdentifier": "TRC20: TLqS89z...GamingZoneTRC20Escrow",
+      "qrUrl": "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=TRC20:TLqS89z98xPzPzGamingZoneNepal",
+      "instructions": "1. Calculate USDT equivalent (1 USDT ≈ NPR 138.50).\n2. Send exact USDT to TRC20 Address: TLqS89z98xPzPzGamingZoneNepalTRC20\n3. Provide TxHash (Transaction Hash) and screenshot.",
+      "active": true,
+      "sortOrder": 6
+    }
+  ],
+  "promoCodes": [
+    {
+      "id": "promo-1",
+      "code": "NEPALGAMER",
+      "type": "percentage",
+      "value": 10,
+      "minimumOrder": 300,
+      "maximumDiscount": 200,
+      "expiresAt": "2028-12-31T23:59:59Z",
+      "usageLimit": 1000,
+      "usedCount": 142,
+      "active": true
+    },
+    {
+      "id": "promo-2",
+      "code": "WELCOME100",
+      "type": "fixed",
+      "value": 100,
+      "minimumOrder": 500,
+      "expiresAt": "2028-12-31T23:59:59Z",
+      "usageLimit": 500,
+      "usedCount": 88,
+      "active": true
+    },
+    {
+      "id": "promo-3",
+      "code": "PUBGPRO",
+      "type": "percentage",
+      "value": 5,
+      "minimumOrder": 400,
+      "maximumDiscount": 300,
+      "expiresAt": "2028-12-31T23:59:59Z",
+      "usageLimit": 1000,
+      "usedCount": 65,
+      "active": true
+    }
+  ],
+  "offers": [
+    {
+      "id": "off-1",
+      "title": "PUBG Mobile Mega UC Carnival",
+      "description": "Get extra bonus UC on all packages above 660 UC + extra 10% off using code NEPALGAMER.",
+      "imageUrl": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/12/44/11/124411bd-7435-f006-e5b7-6203ada37693/0.jpg/1200x675bb.jpg",
+      "targetGameId": "game-pubg",
+      "discountText": "Up to 15% Bonus",
+      "badge": "Limited Time",
+      "startDate": "2026-09-01T00:00:00Z",
+      "endDate": "2026-10-31T23:59:59Z",
+      "active": true
+    },
+    {
+      "id": "off-2",
+      "title": "MLBB Season Rush Diamonds Pass",
+      "description": "Weekly Diamond Pass at only NPR 220. Level up your Celestial rank effortlessly.",
+      "imageUrl": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/22/ff/5f/22ff5f86-b3fe-ce72-93b9-acc67f1aa1b1/2688x1242.jpg/1200x675bb.jpg",
+      "targetGameId": "game-mlbb",
+      "discountText": "NPR 220 Only",
+      "badge": "Top Pick",
+      "startDate": "2026-09-01T00:00:00Z",
+      "endDate": "2026-10-31T23:59:59Z",
+      "active": true
+    },
+    {
+      "id": "off-3",
+      "title": "Genshin Impact Welkin Moon Special",
+      "description": "Direct UID top-up with zero account login required. Safe, guaranteed 3000 primogems overall.",
+      "imageUrl": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/67/34/c5/6734c518-9868-e282-2904-493f828b14eb/EN-2796x1290-_U65e0logo.jpg/1200x675bb.jpg",
+      "targetGameId": "game-genshin",
+      "discountText": "Save NPR 90",
+      "badge": "Best Seller",
+      "startDate": "2026-09-01T00:00:00Z",
+      "endDate": "2026-10-31T23:59:59Z",
+      "active": true
+    }
+  ],
+  "settings": {
+    "websiteName": "GamingZone Top-up Center",
+    "siteSubtitle": "Nepal’s #1 Trusted Game Top-Up Marketplace",
+    "contactEmail": "support@gamingzone.com.np",
+    "supportPhone": "+977 9801234567",
+    "whatsappNumber": "+9779801234567",
+    "whatsappLink": "https://wa.me/9779801234567?text=Hi%20GamingZone%20Team%2C%20I%20need%20assistance%20with%20my%20order",
+    "telegramLink": "https://t.me/GamingZoneNepal",
+    "facebookLink": "https://facebook.com/GamingZoneNepalOfficial",
+    "currency": "NPR",
+    "currencySymbol": "NPR ",
+    "orderProcessingNotice": "All top-ups are manually processed by our operations team in Kathmandu within 5 to 20 minutes of payment verification.",
+    "maintenanceMode": false,
+    "minOrderAmount": 50,
+    "supportHours": "8:00 AM – 11:30 PM NST (7 Days a Week)"
+  },
+  "users": [
+    {
+      "id": "usr-admin-1",
+      "name": "Suman Shrestha (Super Admin)",
+      "email": "admin@gamingzone.com.np",
+      "phone": "+977 9841000001",
+      "photoUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
+      "authProvider": "email",
+      "role": "SUPER_ADMIN",
+      "status": "active",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-09-10T00:00:00Z"
+    },
+    {
+      "id": "usr-mgr-1",
+      "name": "Bikash Thapa (Order Manager)",
+      "email": "manager@gamingzone.com.np",
+      "phone": "+977 9841000002",
+      "photoUrl": "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80",
+      "authProvider": "email",
+      "role": "ORDER_MANAGER",
+      "status": "active",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-09-10T00:00:00Z"
+    },
+    {
+      "id": "usr-demo-customer",
+      "name": "Aayush Maharjan",
+      "email": "demo@gamingzone.com.np",
+      "phone": "+977 9841234567",
+      "photoUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+      "authProvider": "email",
+      "role": "CUSTOMER",
+      "status": "active",
+      "createdAt": "2026-03-01T00:00:00Z",
+      "updatedAt": "2026-09-10T00:00:00Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "ord-001",
+      "orderNumber": "GZ-20260910-000101",
+      "userId": "usr-demo-customer",
+      "customerName": "Aayush Maharjan",
+      "customerEmail": "demo@gamingzone.com.np",
+      "customerPhone": "+977 9841234567",
+      "gameId": "game-pubg",
+      "gameName": "PUBG Mobile",
+      "gameLogo": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/6d/98/24/6d9824dd-f75f-9bd6-221e-33324fedecb2/AppIcon-0-0-1x_U007emarketing-0-7-0-85-220.png/512x512bb.jpg",
+      "packageId": "pkg-pubg-660",
+      "packageName": "660 UC (Royal Pass)",
+      "playerInformation": {
+        "playerId": "5129384912",
+        "nickname": "Aayush_Gamer_NP"
+      },
+      "originalAmount": 1500,
+      "discountAmount": 150,
+      "promoCode": "NEPALGAMER",
+      "finalAmount": 1350,
+      "paymentMethodId": "pay-esewa",
+      "paymentMethodName": "eSewa Mobile Wallet",
+      "status": "Completed",
+      "transactionId": "ESEWA-REF-891238471928",
+      "paymentSubmittedAmount": 1350,
+      "paymentProofUrl": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=600&q=80",
+      "customerNote": "Need for current Royale Pass rush",
+      "adminNote": "Top-up sent via Midasbuy voucher code successfully.",
+      "customerFacingMessage": "Your 660 UC has been successfully credited to ID 5129384912. Happy gaming!",
+      "timeline": [
+        {
+          "status": "Pending Payment",
+          "timestamp": "2026-09-10T05:00:00Z",
+          "note": "Order created"
+        },
+        {
+          "status": "Payment Submitted",
+          "timestamp": "2026-09-10T05:05:00Z",
+          "note": "Customer uploaded eSewa screenshot and Reference Code"
+        },
+        {
+          "status": "Payment Verified",
+          "timestamp": "2026-09-10T05:08:00Z",
+          "note": "Admin verified NPR 1,350 in eSewa merchant dashboard",
+          "actor": "Bikash Thapa"
+        },
+        {
+          "status": "Top-up Processing",
+          "timestamp": "2026-09-10T05:10:00Z",
+          "note": "Admin dispatched UC voucher",
+          "actor": "Bikash Thapa"
+        },
+        {
+          "status": "Completed",
+          "timestamp": "2026-09-10T05:14:00Z",
+          "note": "Top-up confirmed in-game",
+          "actor": "Bikash Thapa"
+        }
+      ],
+      "createdAt": "2026-09-10T05:00:00Z",
+      "updatedAt": "2026-09-10T05:14:00Z",
+      "completedAt": "2026-09-10T05:14:00Z"
+    },
+    {
+      "id": "ord-002",
+      "orderNumber": "GZ-20260910-000102",
+      "userId": "usr-demo-customer",
+      "customerName": "Aayush Maharjan",
+      "customerEmail": "demo@gamingzone.com.np",
+      "customerPhone": "+977 9841234567",
+      "gameId": "game-mlbb",
+      "gameName": "Mobile Legends: Bang Bang",
+      "gameLogo": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8d/72/30/8d72307c-25c0-6391-ab4f-86ff1a9d3fe6/AppIcon-0-0-1x_U007emarketing-0-7-0-85-220.png/512x512bb.jpg",
+      "packageId": "pkg-ml-weekly",
+      "packageName": "Weekly Diamond Pass",
+      "playerInformation": {
+        "userId": "84918293",
+        "zoneId": "2049"
+      },
+      "originalAmount": 260,
+      "discountAmount": 40,
+      "finalAmount": 220,
+      "paymentMethodId": "pay-khalti",
+      "paymentMethodName": "Khalti Digital Wallet",
+      "status": "Completed",
+      "transactionId": "KHALTI-TXN-49182390",
+      "paymentSubmittedAmount": 220,
+      "paymentProofUrl": "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80",
+      "timeline": [
+        {
+          "status": "Pending Payment",
+          "timestamp": "2026-09-10T06:30:00Z",
+          "note": "Order created"
+        },
+        {
+          "status": "Payment Submitted",
+          "timestamp": "2026-09-10T06:35:00Z",
+          "note": "Payment proof submitted with Khalti ID"
+        },
+        {
+          "status": "Payment Under Review",
+          "timestamp": "2026-09-10T06:36:00Z",
+          "note": "Queued for admin verification"
+        },
+        {
+          "status": "Completed",
+          "timestamp": "2026-09-10T15:31:08.926Z",
+          "note": "Order status manually transitioned to Completed by Suman Shrestha (Super Admin)",
+          "actor": "Suman Shrestha (Super Admin)"
+        }
+      ],
+      "createdAt": "2026-09-10T06:30:00Z",
+      "updatedAt": "2026-09-10T15:31:08.926Z",
+      "completedAt": "2026-09-10T15:31:08.926Z"
+    },
+    {
+      "id": "ord-003",
+      "orderNumber": "GZ-20260910-000103",
+      "userId": "usr-demo-customer",
+      "customerName": "Aayush Maharjan",
+      "customerEmail": "demo@gamingzone.com.np",
+      "customerPhone": "+977 9841234567",
+      "gameId": "game-freefire",
+      "gameName": "Free Fire",
+      "gameLogo": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/95/16/f3/9516f314-4151-38f7-7d61-47bbc24f5406/AppIcon-1785257489-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg",
+      "packageId": "pkg-ff-341",
+      "packageName": "310 + 31 Bonus Diamonds",
+      "playerInformation": {
+        "playerId": "1928374619",
+        "region": "Nepal / India Server"
+      },
+      "originalAmount": 380,
+      "discountAmount": 55,
+      "finalAmount": 325,
+      "paymentMethodId": "pay-fonepay",
+      "paymentMethodName": "Fonepay QR",
+      "status": "Completed",
+      "transactionId": "FONEPAY-MER-91823812",
+      "paymentSubmittedAmount": 325,
+      "paymentProofUrl": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=600&q=80",
+      "timeline": [
+        {
+          "status": "Pending Payment",
+          "timestamp": "2026-09-10T07:00:00Z",
+          "note": "Order created"
+        },
+        {
+          "status": "Payment Submitted",
+          "timestamp": "2026-09-10T07:02:00Z",
+          "note": "Payment voucher uploaded"
+        },
+        {
+          "status": "Payment Verified",
+          "timestamp": "2026-09-10T07:05:00Z",
+          "note": "Payment confirmed in merchant statement",
+          "actor": "Suman Shrestha"
+        },
+        {
+          "status": "Top-up Processing",
+          "timestamp": "2026-09-10T07:08:00Z",
+          "note": "Processing Free Fire Diamonds via direct UID gateway",
+          "actor": "Suman Shrestha"
+        },
+        {
+          "status": "Payment Verified",
+          "timestamp": "2026-09-10T15:30:24.324Z",
+          "note": "Order status manually transitioned to Payment Verified by Suman Shrestha (Super Admin)",
+          "actor": "Suman Shrestha (Super Admin)"
+        },
+        {
+          "status": "Completed",
+          "timestamp": "2026-09-10T15:31:02.644Z",
+          "note": "Order status manually transitioned to Completed by Suman Shrestha (Super Admin)",
+          "actor": "Suman Shrestha (Super Admin)"
+        }
+      ],
+      "createdAt": "2026-09-10T07:00:00Z",
+      "updatedAt": "2026-09-10T15:31:02.644Z",
+      "completedAt": "2026-09-10T15:31:02.644Z"
+    }
+  ],
+  "supportTickets": [
+    {
+      "id": "tkt-001",
+      "ticketNumber": "TKT-2026-1001",
+      "userId": "usr-demo-customer",
+      "userName": "Aayush Maharjan",
+      "userEmail": "demo@gamingzone.com.np",
+      "userPhone": "+977 9841234567",
+      "orderId": "ord-002",
+      "orderNumber": "GZ-20260910-000102",
+      "subject": "Verification status for Khalti transaction",
+      "status": "Waiting for Customer",
+      "priority": "medium",
+      "createdAt": "2026-09-10T06:40:00Z",
+      "updatedAt": "2026-09-10T15:32:41.376Z",
+      "messages": [
+        {
+          "id": "msg-1",
+          "ticketId": "tkt-001",
+          "senderId": "usr-demo-customer",
+          "senderName": "Aayush Maharjan",
+          "senderRole": "customer",
+          "message": "Hello, I uploaded my Khalti payment proof 10 minutes ago. Just checking when the MLBB weekly pass will be added.",
+          "createdAt": "2026-09-10T06:40:00Z"
+        },
+        {
+          "id": "msg-2",
+          "ticketId": "tkt-001",
+          "senderId": "usr-mgr-1",
+          "senderName": "Bikash Thapa",
+          "senderRole": "support",
+          "message": "Hi Aayush! We are currently checking the Khalti merchant settlement for transaction KHALTI-TXN-49182390. It usually takes 5-15 mins. Will complete it shortly!",
+          "createdAt": "2026-09-10T06:45:00Z"
+        },
+        {
+          "id": "msg-1789054361376",
+          "ticketId": "tkt-001",
+          "senderName": "Suman Shrestha (Super Admin) (Staff)",
+          "senderRole": "AGENT",
+          "message": "Your payment has been manually verified in our eSewa portal. Top-up in progress!",
+          "createdAt": "2026-09-10T15:32:41.376Z"
+        }
+      ]
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "aud-001",
+      "adminId": "usr-admin-1",
+      "adminName": "Suman Shrestha",
+      "adminRole": "SUPER_ADMIN",
+      "action": "SYSTEM_INITIALIZATION",
+      "targetType": "setting",
+      "targetId": "settings",
+      "details": "GamingZone Top-up Center system initial launch in Nepal with NPR currency.",
+      "createdAt": "2026-09-10T00:00:00Z"
+    },
+    {
+      "id": "aud-002",
+      "adminId": "usr-mgr-1",
+      "adminName": "Bikash Thapa",
+      "adminRole": "ORDER_MANAGER",
+      "action": "PAYMENT_VERIFIED",
+      "targetType": "order",
+      "targetId": "ord-001",
+      "details": "Verified eSewa transaction ESEWA-REF-891238471928 for NPR 1,350.",
+      "createdAt": "2026-09-10T05:08:00Z"
+    },
+    {
+      "id": "aud-003",
+      "adminId": "usr-mgr-1",
+      "adminName": "Bikash Thapa",
+      "adminRole": "ORDER_MANAGER",
+      "action": "TOPUP_COMPLETED",
+      "targetType": "order",
+      "targetId": "ord-001",
+      "details": "Marked order GZ-20260910-000101 completed with 660 UC sent to 5129384912.",
+      "createdAt": "2026-09-10T05:14:00Z"
+    },
+    {
+      "adminId": "usr-admin-1",
+      "adminName": "Suman Shrestha (Super Admin)",
+      "adminRole": "SUPER_ADMIN",
+      "action": "ORDER_STATUS_PAYMENT_VERIFIED",
+      "targetType": "order",
+      "targetId": "ord-003",
+      "details": "Transitioned order GZ-20260910-000103 to \"Payment Verified\". Note: None",
+      "id": "aud-1789054224324-109",
+      "createdAt": "2026-09-10T15:30:24.324Z"
+    },
+    {
+      "adminId": "usr-admin-1",
+      "adminName": "Suman Shrestha (Super Admin)",
+      "adminRole": "SUPER_ADMIN",
+      "action": "ORDER_STATUS_COMPLETED",
+      "targetType": "order",
+      "targetId": "ord-003",
+      "details": "Transitioned order GZ-20260910-000103 to \"Completed\". Note: None",
+      "id": "aud-1789054262644-691",
+      "createdAt": "2026-09-10T15:31:02.644Z"
+    },
+    {
+      "adminId": "usr-admin-1",
+      "adminName": "Suman Shrestha (Super Admin)",
+      "adminRole": "SUPER_ADMIN",
+      "action": "ORDER_STATUS_COMPLETED",
+      "targetType": "order",
+      "targetId": "ord-002",
+      "details": "Transitioned order GZ-20260910-000102 to \"Completed\". Note: None",
+      "id": "aud-1789054268926-208",
+      "createdAt": "2026-09-10T15:31:08.926Z"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif-1",
+      "userId": "usr-demo-customer",
+      "title": "Welcome to GamingZone Nepal!",
+      "message": "Top up PUBG Mobile, Free Fire, MLBB with instant manual verification using eSewa and Khalti.",
+      "read": false,
+      "createdAt": "2026-09-10T15:26:13.263Z",
+      "type": "system"
+    },
+    {
+      "id": "notif-2",
+      "userId": "usr-demo-customer",
+      "title": "Order GZ-20260910-000101 Completed",
+      "message": "Your 660 UC top-up has been dispatched to Character ID 5129384912.",
+      "orderId": "ord-001",
+      "read": true,
+      "createdAt": "2026-09-10T15:26:13.264Z",
+      "type": "order"
+    },
+    {
+      "userId": "usr-demo-customer",
+      "title": "Payment Verified (GZ-20260910-000103)",
+      "message": "Your payment of NPR 325 has been verified! We are preparing the top-up.",
+      "orderId": "ord-003",
+      "type": "order",
+      "id": "notif-1789054224325-346",
+      "createdAt": "2026-09-10T15:30:24.325Z",
+      "read": false
+    },
+    {
+      "userId": "usr-demo-customer",
+      "title": "Top-Up Completed! (GZ-20260910-000103)",
+      "message": "Congratulations! Top-up for Free Fire has been delivered successfully.",
+      "orderId": "ord-003",
+      "type": "order",
+      "id": "notif-1789054262645-899",
+      "createdAt": "2026-09-10T15:31:02.645Z",
+      "read": false
+    },
+    {
+      "userId": "usr-demo-customer",
+      "title": "Top-Up Completed! (GZ-20260910-000102)",
+      "message": "Congratulations! Top-up for Mobile Legends: Bang Bang has been delivered successfully.",
+      "orderId": "ord-002",
+      "type": "order",
+      "id": "notif-1789054268927-289",
+      "createdAt": "2026-09-10T15:31:08.927Z",
+      "read": false
+    }
+  ]
+}
