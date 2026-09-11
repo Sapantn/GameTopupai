@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { api } from '../../lib/api';
 import { isStaffUser, isStaffRole, STAFF_ROLES } from '../../lib/authMiddleware';
 import { AdminTab } from '../../context/AppContext';
 import {
@@ -27,7 +28,7 @@ export const AdminAccessGate: React.FC<AdminAccessGateProps> = ({
   serverMessage,
   onRetry
 }) => {
-  const { user, setView, switchRole, addToast } = useApp();
+  const { user, setUser, setView, switchRole, addToast } = useApp();
 
   const [staffEmail, setStaffEmail] = useState('');
   const [staffPassword, setStaffPassword] = useState('');
@@ -35,45 +36,30 @@ export const AdminAccessGate: React.FC<AdminAccessGateProps> = ({
   const [loading, setLoading] = useState(false);
 
   // Handle staff manual login credentials
-  const handleStaffLogin = (e: React.FormEvent) => {
+  const handleStaffLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!staffEmail) {
+      setAuthError('Please enter your staff email.');
+      return;
+    }
     setLoading(true);
     setAuthError(null);
 
-    setTimeout(() => {
-      const cleanEmail = staffEmail.trim().toLowerCase();
-      // Allow demo staff credentials
-      if (
-        cleanEmail === 'admin@gamingzone.com.np' ||
-        cleanEmail === 'admin' ||
-        cleanEmail === 'superadmin' ||
-        staffPassword === 'admin123' ||
-        staffPassword === '2026'
-      ) {
-        switchRole('SUPER_ADMIN');
-        addToast('Staff credentials verified. Welcome to Operations Desk.', 'success');
+    try {
+      const res = await api.login(staffEmail.trim(), staffPassword);
+      if (!isStaffUser(res.user)) {
+        setAuthError('Access denied. This account does not possess staff privileges.');
         setLoading(false);
-        if (onRetry) onRetry();
-      } else if (cleanEmail.includes('order') || cleanEmail.includes('manager') || staffPassword === 'manager123') {
-        switchRole('ORDER_MANAGER');
-        addToast('Order Manager privileges granted.', 'success');
-        setLoading(false);
-        if (onRetry) onRetry();
-      } else if (cleanEmail.includes('content') || staffPassword === 'content123') {
-        switchRole('CONTENT_MANAGER');
-        addToast('Content Manager privileges granted.', 'success');
-        setLoading(false);
-        if (onRetry) onRetry();
-      } else if (cleanEmail.includes('support') || staffPassword === 'support123') {
-        switchRole('SUPPORT_AGENT');
-        addToast('Support Agent privileges granted.', 'success');
-        setLoading(false);
-        if (onRetry) onRetry();
-      } else {
-        setAuthError('Invalid staff credentials. Contact GamingZone Security Operations.');
-        setLoading(false);
+        return;
       }
-    }, 400);
+      setUser(res.user);
+      addToast(`Staff credentials verified. Welcome, ${res.user.name}.`, 'success');
+      if (onRetry) onRetry();
+    } catch (err: any) {
+      setAuthError(err.message || 'Invalid staff credentials. Contact GamingZone Security Operations.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleAuthorizeDemoStaff = (role: 'SUPER_ADMIN' | 'ORDER_MANAGER' | 'CONTENT_MANAGER' | 'SUPPORT_AGENT') => {

@@ -26,6 +26,7 @@ export const TAB_ROLE_PERMISSIONS: Record<AdminTab, readonly UserRole[]> = {
   support: ['SUPER_ADMIN', 'SUPPORT_AGENT'],
   'audit-logs': ['SUPER_ADMIN', 'ORDER_MANAGER'],
   settings: ['SUPER_ADMIN'],
+  staff: ['SUPER_ADMIN'],
 };
 
 /**

@@ -26,7 +26,8 @@ export type AdminTab =
   | 'offers'
   | 'support'
   | 'audit-logs'
-  | 'settings';
+  | 'settings'
+  | 'staff';
 
 interface Toast {
   id: string;
@@ -80,6 +81,10 @@ interface AppContextType {
   setSelectedCatalog: (slug: string) => void;
   authModalOpen: boolean;
   setAuthModalOpen: (open: boolean) => void;
+  authModalMode: 'google' | 'otp' | 'login' | 'register';
+  setAuthModalMode: (mode: 'google' | 'otp' | 'login' | 'register') => void;
+  openAuthModal: (initialMode?: 'google' | 'otp' | 'login' | 'register') => void;
+  logout: () => void;
   orderLookupOpen: boolean;
   setOrderLookupOpen: (open: boolean) => void;
   notificationsOpen: boolean;
@@ -101,19 +106,41 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Default to demo customer for immediate high-touch preview, can switch freely
-  const [user, setUser] = useState<User | null>({
-    id: 'usr-demo-customer',
-    name: 'Aayush Maharjan',
-    email: 'demo@gamingzone.com.np',
-    phone: '+977 9841234567',
-    photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
-    authProvider: 'email',
-    role: 'CUSTOMER',
-    status: 'active',
-    createdAt: '2026-03-01T00:00:00Z',
-    updatedAt: '2026-09-10T00:00:00Z'
+  // Load saved session or start as guest so visitors can cleanly sign up or sign in
+  const [user, setUserState] = useState<User | null>(() => {
+    try {
+      const saved = localStorage.getItem('gz_auth_user');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return null;
   });
+
+  const setUser = (newUser: User | null) => {
+    setUserState(newUser);
+    try {
+      if (newUser) {
+        localStorage.setItem('gz_auth_user', JSON.stringify(newUser));
+      } else {
+        localStorage.removeItem('gz_auth_user');
+      }
+    } catch (e) {}
+  };
+
+  const [authModalMode, setAuthModalMode] = useState<'google' | 'otp' | 'login' | 'register'>('register');
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  const openAuthModal = (initialMode?: 'google' | 'otp' | 'login' | 'register') => {
+    if (initialMode) setAuthModalMode(initialMode);
+    setAuthModalOpen(true);
+  };
+
+  const logout = () => {
+    setUser(null);
+    setToasts(prev => [...prev, { id: `toast-${Date.now()}`, type: 'info', message: 'You have been logged out.' }]);
+    if (view === 'admin' || view === 'profile') {
+      setView('home');
+    }
+  };
 
   const [view, setView] = useState<AppView>('home');
   const [adminTab, setAdminTab] = useState<AdminTab>('dashboard');
@@ -125,7 +152,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [catalogTab, setCatalogTab] = useState<'game' | 'card'>('game');
   const [selectedCatalog, setSelectedCatalog] = useState<string>('all');
 
-  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [orderLookupOpen, setOrderLookupOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
@@ -325,17 +351,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } else if (role === 'SUPER_ADMIN') {
       setUser({
         id: 'usr-admin-1',
-        name: 'Suman Shrestha (Super Admin)',
-        email: 'admin@gamingzone.com.np',
+        name: 'Sapan Thapa (Super Admin)',
+        email: 'sapanthapa49@gmail.com',
+        password: 'admin@123',
         phone: '+977 9841000001',
         photoUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
         authProvider: 'email',
         role: 'SUPER_ADMIN',
         status: 'active',
+        emailVerified: true,
         createdAt: '2026-01-01T00:00:00Z',
-        updatedAt: '2026-09-10T00:00:00Z'
+        updatedAt: '2026-09-11T00:00:00Z'
       });
-      addToast('Switched to Super Admin mode (Full access)', 'success');
+      addToast('Switched to Super Admin (sapanthapa49@gmail.com)', 'success');
     } else if (role === 'ORDER_MANAGER') {
       setUser({
         id: 'usr-mgr-1',
@@ -407,6 +435,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setSelectedCatalog,
         authModalOpen,
         setAuthModalOpen,
+        authModalMode,
+        setAuthModalMode,
+        openAuthModal,
+        logout,
         orderLookupOpen,
         setOrderLookupOpen,
         notificationsOpen,

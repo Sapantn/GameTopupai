@@ -38,6 +38,7 @@ import { AdminOffers } from './pages/admin/AdminOffers';
 import { AdminSupport } from './pages/admin/AdminSupport';
 import { AdminAuditLogs } from './pages/admin/AdminAuditLogs';
 import { AdminSettings } from './pages/admin/AdminSettings';
+import { AdminStaff } from './pages/admin/AdminStaff';
 
 // Authentication & Authorization Route Guard
 import { AdminRouteGuard } from './components/AdminRouteGuard';
@@ -69,6 +70,7 @@ const MainContent: React.FC = () => {
           {adminTab === 'support' && <AdminSupport />}
           {adminTab === 'audit-logs' && <AdminAuditLogs />}
           {adminTab === 'settings' && <AdminSettings />}
+          {adminTab === 'staff' && <AdminStaff />}
         </AdminLayout>
       </AdminRouteGuard>
     );

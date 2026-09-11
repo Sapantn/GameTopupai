@@ -516,20 +516,23 @@ export const defaultSettings: WebsiteSettings = {
 export const defaultUsers: User[] = [
   {
     id: 'usr-admin-1',
-    name: 'Suman Shrestha (Super Admin)',
-    email: 'admin@gamingzone.com.np',
+    name: 'Sapan Thapa (Super Admin)',
+    email: 'sapanthapa49@gmail.com',
+    password: 'admin@123',
     phone: '+977 9841000001',
     photoUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
     authProvider: 'email',
     role: 'SUPER_ADMIN',
     status: 'active',
+    emailVerified: true,
     createdAt: '2026-01-01T00:00:00Z',
-    updatedAt: '2026-09-10T00:00:00Z'
+    updatedAt: '2026-09-11T00:00:00Z'
   },
   {
     id: 'usr-mgr-1',
     name: 'Bikash Thapa (Order Manager)',
     email: 'manager@gamingzone.com.np',
+    password: 'manager@123',
     phone: '+977 9841000002',
     photoUrl: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80',
     authProvider: 'email',
@@ -542,6 +545,7 @@ export const defaultUsers: User[] = [
     id: 'usr-cnt-1',
     name: 'Rohan Gurung (Content Manager)',
     email: 'content@gamingzone.com.np',
+    password: 'content@123',
     phone: '+977 9841000003',
     photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
     authProvider: 'email',
@@ -554,6 +558,7 @@ export const defaultUsers: User[] = [
     id: 'usr-sup-1',
     name: 'Pooja Karki (Support Agent)',
     email: 'support@gamingzone.com.np',
+    password: 'support@123',
     phone: '+977 9841000004',
     photoUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
     authProvider: 'email',

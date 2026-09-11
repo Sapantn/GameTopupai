@@ -7,6 +7,7 @@ import {
   OfferBanner,
   WebsiteSettings,
   User,
+  UserRole,
   Order,
   OrderStatus,
   SupportTicket,
@@ -97,102 +98,101 @@ export const api = {
   },
 
   // Auth
-  async login(emailOrPhone: string, role?: string): Promise<{ success: boolean; user: User }> {
+  async login(emailOrPhone: string, password?: string, role?: string): Promise<{ success: boolean; user: User }> {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ emailOrPhone, password, role })
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data?.error || 'Login failed. Please check your credentials.');
+    }
+    return data;
+  },
+
+  async register(name: string, email: string, phone?: string, password?: string): Promise<{ success: boolean; user: User }> {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, phone, password })
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data?.error || 'Registration failed. Please check your information.');
+    }
+    return data;
+  },
+
+  async getGoogleAuthConfig(): Promise<{ clientId: string; configured: boolean }> {
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ emailOrPhone, role })
-      });
+      const res = await fetch('/api/auth/google/config');
       if (res.ok) {
         return await res.json();
       }
     } catch (e) {
-      console.warn('Login request failed, using fallback user', e);
+      console.warn('Could not fetch Google auth config:', e);
     }
-    // Safe client-side fallback
-    const matched = defaultUsers.find(
-      u => u.email.toLowerCase() === emailOrPhone.toLowerCase() || u.phone === emailOrPhone
-    );
-    const user = matched || {
-      id: `usr-${Date.now()}`,
-      name: emailOrPhone.split('@')[0] || 'Gaming Customer',
-      email: emailOrPhone.includes('@') ? emailOrPhone : 'customer@gamingzone.com.np',
-      phone: !emailOrPhone.includes('@') ? emailOrPhone : '+977 9841234567',
-      role: (role as any) || 'CUSTOMER',
-      status: 'active' as const,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    return { success: true, user };
+    return { clientId: '', configured: false };
   },
 
-  async register(name: string, email: string, phone?: string): Promise<{ success: boolean; user: User }> {
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, phone })
-      });
-      if (res.ok) {
-        return await res.json();
-      }
-    } catch (e) {
-      console.warn('Register request failed, using fallback', e);
+  async googleLogin(params: {
+    credential?: string;
+    accessToken?: string;
+    email?: string;
+    name?: string;
+    photoUrl?: string;
+  }): Promise<{ success: boolean; message?: string; user: User }> {
+    const res = await fetch('/api/auth/google', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params)
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data?.error || 'Google authentication failed.');
     }
-    const user: User = {
-      id: `usr-${Date.now()}`,
-      name,
-      email,
-      phone: phone || '+977 9841234567',
-      role: 'CUSTOMER',
-      status: 'active',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    return { success: true, user };
+    return data;
   },
 
-  async sendOtp(phone: string): Promise<{ success: boolean; message: string; demoOtp?: string }> {
-    try {
-      const res = await fetch('/api/auth/otp/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone })
-      });
-      if (res.ok) {
-        return await res.json();
-      }
-    } catch {
-      // Ignore
+  async sendOtp(phone: string): Promise<{
+    success: boolean;
+    message: string;
+    phone: string;
+    operator?: string;
+    demoOtp?: string;
+    expiresAt?: number;
+    cooldownSeconds?: number;
+    smsSentViaCarrier?: boolean;
+  }> {
+    const res = await fetch('/api/auth/otp/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone })
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data?.error || 'Failed to send OTP verification code.');
     }
-    return { success: true, message: 'OTP sent successfully', demoOtp: '123456' };
+    return data;
   },
 
-  async verifyOtp(phone: string, otp: string, name?: string): Promise<{ success: boolean; user: User }> {
-    try {
-      const res = await fetch('/api/auth/otp/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, otp, name })
-      });
-      if (res.ok) {
-        return await res.json();
-      }
-    } catch {
-      // Ignore
+  async verifyOtp(phone: string, otp: string, name?: string): Promise<{ success: boolean; message?: string; user: User }> {
+    const res = await fetch('/api/auth/otp/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, otp, name })
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data?.error || 'OTP verification failed.');
     }
-    const user: User = {
-      id: `usr-${Date.now()}`,
-      name: name || 'Nepali Gamer',
-      phone,
-      email: `${phone.replace(/[^0-9]/g, '')}@gamingzone.com.np`,
-      role: 'CUSTOMER',
-      status: 'active',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    return { success: true, user };
+    return data;
   },
 
   async updateProfile(id: string, updates: Partial<User>): Promise<{ success: boolean; user: User }> {
@@ -951,5 +951,65 @@ export const api = {
         attemptedTab
       };
     }
+  },
+
+  // Staff & Role Management (Super Admin Exclusive)
+  async getStaffUsers(adminUserId?: string): Promise<User[]> {
+    const res = await fetch('/api/admin/staff', {
+      headers: getHeaders(adminUserId)
+    });
+    const data = await res.json().catch(() => ([]));
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to fetch staff members.');
+    }
+    return data;
+  },
+
+  async addStaffUser(
+    staff: { name: string; email: string; phone?: string; role: UserRole; password?: string },
+    adminUserId?: string
+  ): Promise<{ success: boolean; staff: User; isExistingUser?: boolean }> {
+    const res = await fetch('/api/admin/staff', {
+      method: 'POST',
+      headers: getHeaders(adminUserId),
+      body: JSON.stringify(staff)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to add staff member.');
+    }
+    return data;
+  },
+
+  async updateStaffUser(
+    id: string,
+    updates: Partial<User>,
+    adminUserId?: string
+  ): Promise<{ success: boolean; staff: User }> {
+    const res = await fetch(`/api/admin/staff/${id}`, {
+      method: 'PUT',
+      headers: getHeaders(adminUserId),
+      body: JSON.stringify(updates)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to update staff member.');
+    }
+    return data;
+  },
+
+  async revokeStaffAccess(
+    id: string,
+    adminUserId?: string
+  ): Promise<{ success: boolean; message: string; staff: User }> {
+    const res = await fetch(`/api/admin/staff/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders(adminUserId)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to revoke staff access.');
+    }
+    return data;
   }
 };

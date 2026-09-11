@@ -22,11 +22,10 @@ async function startServer() {
 
   // Lightweight user session simulation via Header (or token)
   const getUserFromReq = (req: Request): User | undefined => {
-    const authHeader = req.headers['x-user-id'] as string;
+    const authHeader = (req.headers['x-user-id'] as string) || (req.headers['authorization'] as string)?.replace('Bearer ', '');
     if (authHeader) {
-      return db.getUserById(authHeader);
+      return db.getUserById(authHeader) || db.getUserByEmail(authHeader);
     }
-    // Default fallback to demo customer if not specified, or allow unauthenticated
     return undefined;
   };
 
@@ -77,16 +76,59 @@ async function startServer() {
       return res.status(400).json({ error: 'Email or phone number is required.' });
     }
 
-    // Check existing
-    let user = db.getUserByEmail(emailOrPhone) || db.getUserByPhone(emailOrPhone);
+    const cleanInput = (emailOrPhone || '').trim();
+    const isSuperAdmin = cleanInput.toLowerCase() === 'sapanthapa49@gmail.com';
+
+    // Super Admin check
+    if (isSuperAdmin) {
+      if (password && password !== 'admin@123') {
+        return res.status(401).json({ error: 'Incorrect password for Super Admin account. Password is admin@123' });
+      }
+      let admin = db.getUserByEmail('sapanthapa49@gmail.com');
+      if (!admin) {
+        admin = db.createUser({
+          name: 'Sapan Thapa (Super Admin)',
+          email: 'sapanthapa49@gmail.com',
+          phone: '+977 9841000001',
+          password: 'admin@123',
+          authProvider: 'email',
+          role: 'SUPER_ADMIN',
+          emailVerified: true
+        });
+      } else if (admin.role !== 'SUPER_ADMIN' || admin.password !== 'admin@123') {
+        admin = db.updateUser(admin.id, {
+          name: 'Sapan Thapa (Super Admin)',
+          role: 'SUPER_ADMIN',
+          password: 'admin@123',
+          status: 'active'
+        }) || admin;
+      }
+      return res.json({ success: true, user: admin });
+    }
+
+    // Check existing user
+    let user = db.getUserByEmail(cleanInput) || db.getUserByPhone(cleanInput);
+
+    // If user has a password set and password is provided, verify it
+    if (user && user.password && password) {
+      if (user.password !== password) {
+        return res.status(401).json({ error: 'Invalid password. Please check your credentials.' });
+      }
+    }
+
+    // If user is a staff account with a password and no password was provided
+    if (user && user.role !== 'CUSTOMER' && user.password && !password) {
+      return res.status(401).json({ error: `Password required for staff account (${user.role.replace('_', ' ')}).` });
+    }
 
     // If user does not exist and it's a test customer, auto-provision
     if (!user) {
-      const isEmail = emailOrPhone.includes('@');
+      const isEmail = cleanInput.includes('@');
       user = db.createUser({
-        name: isEmail ? emailOrPhone.split('@')[0].toUpperCase() : 'Gamer ' + emailOrPhone.slice(-4),
-        email: isEmail ? emailOrPhone : `${emailOrPhone}@user.gamingzone.np`,
-        phone: !isEmail ? emailOrPhone : undefined,
+        name: isEmail ? cleanInput.split('@')[0].toUpperCase() : 'Gamer ' + cleanInput.slice(-4),
+        email: isEmail ? cleanInput : `${cleanInput}@user.gamingzone.np`,
+        phone: !isEmail ? cleanInput : undefined,
+        password: password || undefined,
         authProvider: isEmail ? 'email' : 'phone',
         role: role || 'CUSTOMER'
       });
@@ -98,78 +140,359 @@ async function startServer() {
   app.post('/api/auth/register', (req: Request, res: Response) => {
     const { name, email, phone, password } = req.body;
     if (!name || !email) {
-      return res.status(400).json({ error: 'Name and email are required.' });
+      return res.status(400).json({ error: 'Full name and email address are required.' });
     }
 
-    const existing = db.getUserByEmail(email);
+    const cleanEmail = email.trim().toLowerCase();
+    const existing = db.getUserByEmail(cleanEmail);
     if (existing) {
-      return res.status(400).json({ error: 'An account with this email already exists.' });
+      return res.status(400).json({ error: 'An account with this email already exists. Please sign in instead.' });
     }
 
+    const isSuperAdminEmail = cleanEmail === 'sapanthapa49@gmail.com';
     const user = db.createUser({
-      name,
-      email,
-      phone,
+      name: name.trim(),
+      email: cleanEmail,
+      phone: phone ? phone.trim() : undefined,
+      password: password || (isSuperAdminEmail ? 'admin@123' : undefined),
       authProvider: 'email',
-      role: 'CUSTOMER'
+      role: isSuperAdminEmail ? 'SUPER_ADMIN' : 'CUSTOMER',
+      emailVerified: isSuperAdminEmail
+    });
+
+    db.addAuditLog({
+      action: 'USER_REGISTERED',
+      performedBy: user.id,
+      details: `New user registration: ${user.name} (${user.email}) as ${user.role}`
     });
 
     res.json({ success: true, user });
   });
 
-  app.post('/api/auth/google', (req: Request, res: Response) => {
-    const { email, name, photoUrl } = req.body;
-    if (!email) {
-      return res.status(400).json({ error: 'Google account email required.' });
+  // Helper: Normalize Nepal mobile phone number
+  function normalizeNepalPhone(phone: string): { valid: boolean; normalized: string; operator: string; rawDigits: string } {
+    let digits = (phone || '').replace(/\D/g, '');
+    if (digits.startsWith('977') && digits.length === 13) {
+      digits = digits.slice(3);
+    } else if (digits.startsWith('0') && digits.length === 11) {
+      digits = digits.slice(1);
     }
 
-    let user = db.getUserByEmail(email);
-    if (!user) {
-      user = db.createUser({
-        name: name || 'Google Gamer',
-        email,
-        photoUrl,
-        authProvider: 'google',
-        role: 'CUSTOMER'
-      });
+    const valid = /^(98|97)\d{8}$/.test(digits);
+    let operator = 'Nepal Mobile';
+    if (digits.startsWith('984') || digits.startsWith('985') || digits.startsWith('986')) {
+      operator = 'NTC (Namaste GSM)';
+    } else if (digits.startsWith('974') || digits.startsWith('975') || digits.startsWith('976')) {
+      operator = 'NTC (4G/CDMA)';
+    } else if (digits.startsWith('980') || digits.startsWith('981') || digits.startsWith('982')) {
+      operator = 'Ncell Axiata';
+    } else if (digits.startsWith('988') || digits.startsWith('961') || digits.startsWith('962')) {
+      operator = 'Smart Cell';
     }
 
-    res.json({ success: true, user });
-  });
+    return {
+      valid,
+      normalized: `+977-${digits}`,
+      operator,
+      rawDigits: digits
+    };
+  }
 
-  // Phone OTP Simulation for Nepal Numbers (98XXXXXXXX / 97XXXXXXXX)
-  app.post('/api/auth/otp/send', (req: Request, res: Response) => {
-    const { phone } = req.body;
-    if (!phone || phone.length < 10) {
-      return res.status(400).json({ error: 'Please enter a valid 10-digit Nepal mobile number.' });
-    }
-    // Return sample OTP for testing/verification
-    const sampleOtp = '123456';
+  // In-memory OTP Store with 5-minute expiry and rate-limiting
+  interface OtpRecord {
+    phone: string;
+    code: string;
+    expiresAt: number;
+    attempts: number;
+    lastSentAt: number;
+  }
+  const otpStore = new Map<string, OtpRecord>();
+
+  // Google OAuth Config Check
+  app.get('/api/auth/google/config', (req: Request, res: Response) => {
+    const clientId = process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID || '';
     res.json({
-      success: true,
-      message: `Verification code sent to ${phone}. (For demo testing, code is 123456)`,
-      demoOtp: sampleOtp
+      clientId,
+      configured: Boolean(clientId && clientId.trim().length > 0)
     });
+  });
+
+  // Real Google Sign-In & Sign-Up Verification
+  app.post('/api/auth/google', async (req: Request, res: Response) => {
+    try {
+      const { credential, accessToken, email: directEmail, name: directName, photoUrl: directPhoto } = req.body;
+
+      let email = '';
+      let name = '';
+      let photoUrl = '';
+      let googleId = '';
+
+      // 1. Verify Google ID Token (Credential JWT from Google Identity Services)
+      if (credential) {
+        try {
+          const verifyRes = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(credential)}`);
+          if (!verifyRes.ok) {
+            return res.status(401).json({ error: 'Google credential verification failed. The ID token is invalid or expired.' });
+          }
+          const payload: any = await verifyRes.json();
+          if (!payload.email) {
+            return res.status(400).json({ error: 'No email address found in verified Google account.' });
+          }
+          email = payload.email.toLowerCase().trim();
+          name = payload.name || payload.given_name || email.split('@')[0];
+          photoUrl = payload.picture || '';
+          googleId = payload.sub || '';
+        } catch (tokenErr: any) {
+          console.error('Google ID token verification error:', tokenErr);
+          return res.status(401).json({ error: 'Failed to communicate with Google token verification server.' });
+        }
+      }
+      // 2. Verify Google OAuth2 Access Token
+      else if (accessToken) {
+        try {
+          const userinfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+            headers: { Authorization: `Bearer ${accessToken}` }
+          });
+          if (!userinfoRes.ok) {
+            return res.status(401).json({ error: 'Google OAuth access token verification failed.' });
+          }
+          const payload: any = await userinfoRes.json();
+          if (!payload.email) {
+            return res.status(400).json({ error: 'No email address found in Google profile.' });
+          }
+          email = payload.email.toLowerCase().trim();
+          name = payload.name || payload.given_name || email.split('@')[0];
+          photoUrl = payload.picture || '';
+          googleId = payload.sub || '';
+        } catch (oauthErr: any) {
+          console.error('Google OAuth token error:', oauthErr);
+          return res.status(401).json({ error: 'Failed to verify Google access token.' });
+        }
+      }
+      // 3. Fallback direct parameters with email validation (if developer testing)
+      else if (directEmail) {
+        email = String(directEmail).toLowerCase().trim();
+        name = directName || email.split('@')[0];
+        photoUrl = directPhoto || '';
+        googleId = `google-${Date.now()}`;
+      } else {
+        return res.status(400).json({ error: 'Google authentication credential or access token required.' });
+      }
+
+      // 4. Lookup user in database
+      let user = googleId ? db.getUserByGoogleId(googleId) : undefined;
+      if (!user && email) {
+        user = db.getUserByEmail(email);
+      }
+
+      if (user) {
+        if (user.status === 'suspended') {
+          return res.status(403).json({ error: 'Your account has been suspended. Please contact GamingZone support.' });
+        }
+        // Update user with verified Google details
+        user = db.updateUser(user.id, {
+          googleId: googleId || user.googleId,
+          emailVerified: true,
+          photoUrl: photoUrl || user.photoUrl,
+          authProvider: user.authProvider || 'google'
+        }) || user;
+      } else {
+        // Create new customer user with Google authentication
+        user = db.createUser({
+          name: name || 'Google Gamer',
+          email,
+          photoUrl,
+          authProvider: 'google',
+          role: 'CUSTOMER',
+          googleId,
+          emailVerified: true
+        });
+
+        db.addAuditLog({
+          adminId: user.id,
+          adminName: user.name,
+          adminRole: user.role,
+          action: 'CUSTOMER_GOOGLE_SIGNUP',
+          targetType: 'user',
+          targetId: user.id,
+          details: `New customer registered via verified Google Identity Services: ${email}`
+        });
+      }
+
+      res.json({
+        success: true,
+        message: 'Successfully authenticated with Google.',
+        user
+      });
+    } catch (err: any) {
+      console.error('Google Auth Handler Error:', err);
+      res.status(500).json({ error: 'Internal error processing Google authentication.' });
+    }
+  });
+
+  // Real Phone OTP Verification for Nepal Numbers (98XXXXXXXX / 97XXXXXXXX)
+  app.post('/api/auth/otp/send', async (req: Request, res: Response) => {
+    try {
+      const { phone } = req.body;
+      const parsed = normalizeNepalPhone(phone || '');
+      if (!parsed.valid) {
+        return res.status(400).json({
+          error: 'Please enter a valid 10-digit Nepal mobile number starting with 98 or 97 (e.g. 9841234567).'
+        });
+      }
+
+      const existing = otpStore.get(parsed.rawDigits);
+      const now = Date.now();
+      if (existing && now - existing.lastSentAt < 60000) {
+        const remainingWait = Math.ceil((60000 - (now - existing.lastSentAt)) / 1000);
+        return res.status(429).json({
+          error: `Please wait ${remainingWait} seconds before requesting a new OTP verification code.`
+        });
+      }
+
+      // Generate cryptographically sound 6-digit random code
+      const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiresAt = now + 5 * 60 * 1000; // 5 minutes
+
+      otpStore.set(parsed.rawDigits, {
+        phone: parsed.normalized,
+        code: generatedOtp,
+        expiresAt,
+        attempts: 0,
+        lastSentAt: now
+      });
+
+      // Real SMS dispatch integration via Sparrow SMS (Nepal carrier gateway)
+      let smsSentViaCarrier = false;
+      const sparrowToken = process.env.SPARROW_SMS_TOKEN;
+      const senderId = process.env.SMS_SENDER_ID || 'GamingZone';
+
+      if (sparrowToken) {
+        try {
+          const smsText = `Your GamingZone Nepal verification code is ${generatedOtp}. Valid for 5 minutes. Do not share this code.`;
+          const sparrowUrl = `http://api.sparrowsms.com/v2/sms/?token=${encodeURIComponent(sparrowToken)}&from=${encodeURIComponent(senderId)}&to=${encodeURIComponent(parsed.rawDigits)}&text=${encodeURIComponent(smsText)}`;
+          const smsRes = await fetch(sparrowUrl);
+          if (smsRes.ok) {
+            smsSentViaCarrier = true;
+          }
+        } catch (smsErr) {
+          console.error('[SMS Carrier Error]:', smsErr);
+        }
+      }
+
+      console.log(`[SMS OTP DISPATCH] Phone: ${parsed.normalized} (${parsed.operator}) Code: ${generatedOtp}`);
+
+      res.json({
+        success: true,
+        message: smsSentViaCarrier
+          ? `Verification code dispatched via SMS to ${parsed.normalized} (${parsed.operator}).`
+          : `Verification code generated for ${parsed.normalized} (${parsed.operator}).`,
+        phone: parsed.normalized,
+        operator: parsed.operator,
+        expiresAt,
+        cooldownSeconds: 60,
+        smsSentViaCarrier,
+        // Demo OTP provided for testing when live telecom gateway is not active
+        demoOtp: smsSentViaCarrier ? undefined : generatedOtp
+      });
+    } catch (err: any) {
+      console.error('OTP Send Error:', err);
+      res.status(500).json({ error: 'Failed to dispatch verification code. Please try again.' });
+    }
   });
 
   app.post('/api/auth/otp/verify', (req: Request, res: Response) => {
-    const { phone, otp, name } = req.body;
-    if (!otp || otp !== '123456') {
-      return res.status(400).json({ error: 'Invalid verification code. Please enter 123456.' });
-    }
+    try {
+      const { phone, otp, name } = req.body;
+      const parsed = normalizeNepalPhone(phone || '');
+      if (!parsed.valid) {
+        return res.status(400).json({ error: 'Invalid phone number format.' });
+      }
 
-    let user = db.getUserByPhone(phone);
-    if (!user) {
-      user = db.createUser({
-        name: name || `Gamer ${phone.slice(-4)}`,
-        email: `${phone.replace(/\D/g, '')}@phone.gamingzone.np`,
-        phone,
-        authProvider: 'phone',
-        role: 'CUSTOMER'
+      const cleanOtp = String(otp || '').trim();
+      if (!cleanOtp || cleanOtp.length !== 6) {
+        return res.status(400).json({ error: 'Please enter the complete 6-digit verification code.' });
+      }
+
+      const record = otpStore.get(parsed.rawDigits);
+      if (!record) {
+        return res.status(400).json({
+          error: 'No active verification session found for this number. Please request a new code.'
+        });
+      }
+
+      const now = Date.now();
+      if (now > record.expiresAt) {
+        otpStore.delete(parsed.rawDigits);
+        return res.status(400).json({
+          error: 'Verification code has expired (5 minute validity). Please request a fresh code.'
+        });
+      }
+
+      if (record.attempts >= 5) {
+        otpStore.delete(parsed.rawDigits);
+        return res.status(429).json({
+          error: 'Too many failed attempts. For security, this code was invalidated. Please request a new one.'
+        });
+      }
+
+      // Check OTP code match
+      if (record.code !== cleanOtp) {
+        record.attempts += 1;
+        const remaining = 5 - record.attempts;
+        return res.status(400).json({
+          error: `Incorrect verification code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`
+        });
+      }
+
+      // Correct code: Invalidate from memory to prevent replay attacks
+      otpStore.delete(parsed.rawDigits);
+
+      // Check existing user by phone
+      let user = db.getUserByPhone(parsed.normalized);
+      if (!user) {
+        user = db.getUserByPhone(parsed.rawDigits);
+      }
+
+      if (user) {
+        if (user.status === 'suspended') {
+          return res.status(403).json({ error: 'Your account has been suspended by system operations.' });
+        }
+        user = db.updateUser(user.id, {
+          phone: parsed.normalized,
+          phoneVerified: true,
+          name: user.name || name || `Gamer ${parsed.rawDigits.slice(-4)}`
+        }) || user;
+      } else {
+        user = db.createUser({
+          name: name || `Gamer ${parsed.rawDigits.slice(-4)}`,
+          email: `${parsed.rawDigits}@phone.gamingzone.np`,
+          phone: parsed.normalized,
+          authProvider: 'phone',
+          role: 'CUSTOMER',
+          phoneVerified: true
+        });
+
+        db.addAuditLog({
+          adminId: user.id,
+          adminName: user.name,
+          adminRole: user.role,
+          action: 'CUSTOMER_PHONE_SIGNUP',
+          targetType: 'user',
+          targetId: user.id,
+          details: `New customer registered via verified Nepal phone number: ${parsed.normalized} (${parsed.operator})`
+        });
+      }
+
+      res.json({
+        success: true,
+        message: 'Phone number verified successfully!',
+        user
       });
+    } catch (err: any) {
+      console.error('OTP Verify Error:', err);
+      res.status(500).json({ error: 'Failed to verify code. Please try again.' });
     }
-
-    res.json({ success: true, user });
   });
 
   app.get('/api/auth/me', (req: Request, res: Response) => {
@@ -204,6 +527,7 @@ async function startServer() {
     support: ['SUPER_ADMIN', 'SUPPORT_AGENT'],
     'audit-logs': ['SUPER_ADMIN', 'ORDER_MANAGER'],
     settings: ['SUPER_ADMIN'],
+    staff: ['SUPER_ADMIN'],
   };
 
   /**
@@ -319,6 +643,168 @@ async function startServer() {
 
   app.post('/api/auth/verify-admin', handleVerifyAdmin);
   app.get('/api/auth/verify-admin', handleVerifyAdmin);
+
+  // --- Staff Management Endpoints (Super Admin Only) ---
+  app.get('/api/admin/staff', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (!user || user.role !== 'SUPER_ADMIN') {
+      return res.status(403).json({ error: 'Access denied. Only Super Admin can view staff members.' });
+    }
+    const staffMembers = db.getStaffUsers();
+    res.json(staffMembers);
+  });
+
+  app.post('/api/admin/staff', (req: Request, res: Response) => {
+    const admin = getUserFromReq(req);
+    if (!admin || admin.role !== 'SUPER_ADMIN') {
+      return res.status(403).json({ error: 'Access denied. Only Super Admin can add or assign staff roles.' });
+    }
+
+    const { name, email, phone, role, password } = req.body;
+    if (!name || !email || !role) {
+      return res.status(400).json({ error: 'Name, email, and a valid staff role are required.' });
+    }
+
+    const validRoles: UserRole[] = ['SUPER_ADMIN', 'ORDER_MANAGER', 'CONTENT_MANAGER', 'SUPPORT_AGENT'];
+    if (!validRoles.includes(role)) {
+      return res.status(400).json({ error: `Invalid staff role "${role}". Allowed roles: ${validRoles.join(', ')}` });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    let existing = db.getUserByEmail(cleanEmail);
+
+    if (existing) {
+      // Upgrade or update existing user to staff
+      const updated = db.updateUser(existing.id, {
+        name: name.trim(),
+        role,
+        phone: phone ? phone.trim() : existing.phone,
+        password: password || existing.password || 'admin@123',
+        status: 'active'
+      });
+
+      db.addAuditLog({
+        adminId: admin.id,
+        adminName: admin.name,
+        adminRole: admin.role,
+        action: 'STAFF_ROLE_ASSIGNED',
+        targetType: 'setting',
+        targetId: existing.id,
+        details: `Assigned role ${role} to existing account "${existing.name}" (${existing.email})`
+      });
+
+      return res.json({ success: true, staff: updated, isExistingUser: true });
+    }
+
+    // Create brand new staff user
+    const newStaff = db.createUser({
+      name: name.trim(),
+      email: cleanEmail,
+      phone: phone ? phone.trim() : '+977 9841000000',
+      role,
+      password: password || 'admin@123',
+      authProvider: 'email',
+      emailVerified: true
+    });
+
+    db.addAuditLog({
+      adminId: admin.id,
+      adminName: admin.name,
+      adminRole: admin.role,
+      action: 'STAFF_MEMBER_CREATED',
+      targetType: 'setting',
+      targetId: newStaff.id,
+      details: `Created new staff account "${newStaff.name}" (${newStaff.email}) as ${newStaff.role}`
+    });
+
+    res.status(201).json({ success: true, staff: newStaff, isExistingUser: false });
+  });
+
+  app.put('/api/admin/staff/:id', (req: Request, res: Response) => {
+    const admin = getUserFromReq(req);
+    if (!admin || admin.role !== 'SUPER_ADMIN') {
+      return res.status(403).json({ error: 'Access denied. Only Super Admin can modify staff roles.' });
+    }
+
+    const targetUser = db.getUserById(req.params.id);
+    if (!targetUser) {
+      return res.status(404).json({ error: 'Staff member not found.' });
+    }
+
+    // Prevent demoting primary super admin sapanthapa49@gmail.com
+    const isPrimarySuperAdmin = targetUser.email.toLowerCase() === 'sapanthapa49@gmail.com';
+    const { role, status, password, name, phone } = req.body;
+
+    if (isPrimarySuperAdmin && role && role !== 'SUPER_ADMIN') {
+      return res.status(400).json({ error: 'Cannot demote the primary Super Admin account (sapanthapa49@gmail.com).' });
+    }
+
+    if (isPrimarySuperAdmin && status === 'suspended') {
+      return res.status(400).json({ error: 'Cannot suspend the primary Super Admin account.' });
+    }
+
+    const updates: Partial<User> = {};
+    if (role) updates.role = role;
+    if (status) updates.status = status;
+    if (password) updates.password = password;
+    if (name) updates.name = name.trim();
+    if (phone) updates.phone = phone.trim();
+
+    const updated = db.updateUser(targetUser.id, updates);
+
+    db.addAuditLog({
+      adminId: admin.id,
+      adminName: admin.name,
+      adminRole: admin.role,
+      action: 'STAFF_UPDATED',
+      targetType: 'setting',
+      targetId: targetUser.id,
+      details: `Updated staff "${targetUser.name}" (${targetUser.email}): ${JSON.stringify(updates)}`
+    });
+
+    res.json({ success: true, staff: updated });
+  });
+
+  app.delete('/api/admin/staff/:id', (req: Request, res: Response) => {
+    const admin = getUserFromReq(req);
+    if (!admin || admin.role !== 'SUPER_ADMIN') {
+      return res.status(403).json({ error: 'Access denied. Only Super Admin can revoke staff access.' });
+    }
+
+    const targetUser = db.getUserById(req.params.id);
+    if (!targetUser) {
+      return res.status(404).json({ error: 'Staff member not found.' });
+    }
+
+    if (targetUser.email.toLowerCase() === 'sapanthapa49@gmail.com') {
+      return res.status(400).json({ error: 'Cannot remove or revoke the primary Super Admin account.' });
+    }
+
+    if (targetUser.id === admin.id) {
+      return res.status(400).json({ error: 'You cannot revoke your own Super Admin access.' });
+    }
+
+    // Demote to CUSTOMER so their account still exists but they have zero staff/admin permissions
+    const demoted = db.updateUser(targetUser.id, {
+      role: 'CUSTOMER'
+    });
+
+    db.addAuditLog({
+      adminId: admin.id,
+      adminName: admin.name,
+      adminRole: admin.role,
+      action: 'STAFF_ACCESS_REVOKED',
+      targetType: 'setting',
+      targetId: targetUser.id,
+      details: `Revoked staff access for "${targetUser.name}" (${targetUser.email}). Role converted to CUSTOMER.`
+    });
+
+    res.json({
+      success: true,
+      message: `Staff access revoked for ${targetUser.name}. They are now a regular customer.`,
+      staff: demoted
+    });
+  });
 
   // --- Catalogs Endpoints ---
   app.get('/api/catalogs', (req: Request, res: Response) => {

@@ -62,9 +62,39 @@ class Database {
         fs.mkdirSync(DATA_DIR, { recursive: true });
       }
 
+      const ensureSuperAdmin = (usersList: User[]) => {
+        const superEmail = 'sapanthapa49@gmail.com';
+        const existing = usersList.find(u => u.email.toLowerCase() === superEmail || u.id === 'usr-admin-1');
+        if (existing) {
+          existing.email = superEmail;
+          existing.name = 'Sapan Thapa (Super Admin)';
+          existing.password = 'admin@123';
+          existing.role = 'SUPER_ADMIN';
+          existing.status = 'active';
+          existing.emailVerified = true;
+        } else {
+          usersList.unshift({
+            id: 'usr-admin-sapan',
+            name: 'Sapan Thapa (Super Admin)',
+            email: superEmail,
+            phone: '+977 9841000001',
+            password: 'admin@123',
+            photoUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+            authProvider: 'email',
+            role: 'SUPER_ADMIN',
+            status: 'active',
+            emailVerified: true,
+            createdAt: '2026-01-01T00:00:00Z',
+            updatedAt: new Date().toISOString()
+          });
+        }
+      };
+
       if (fs.existsSync(DB_FILE)) {
         const raw = fs.readFileSync(DB_FILE, 'utf-8');
         const parsed = JSON.parse(raw);
+        const users = parsed.users || defaultUsers;
+        ensureSuperAdmin(users);
         return {
           catalogs: (parsed.catalogs && parsed.catalogs.length > 0) ? parsed.catalogs : defaultCatalogs,
           games: parsed.games || defaultGames,
@@ -73,7 +103,7 @@ class Database {
           promoCodes: parsed.promoCodes || defaultPromoCodes,
           offers: parsed.offers || defaultOffers,
           settings: parsed.settings || defaultSettings,
-          users: parsed.users || defaultUsers,
+          users,
           orders: parsed.orders || defaultOrders,
           supportTickets: parsed.supportTickets || defaultSupportTickets,
           auditLogs: parsed.auditLogs || defaultAuditLogs,
@@ -84,6 +114,18 @@ class Database {
       console.error('Error reading database file, using seeds', err);
     }
 
+    const initialUsers = [...defaultUsers];
+    const superEmail = 'sapanthapa49@gmail.com';
+    const foundAdmin = initialUsers.find(u => u.email.toLowerCase() === superEmail || u.id === 'usr-admin-1');
+    if (foundAdmin) {
+      foundAdmin.email = superEmail;
+      foundAdmin.name = 'Sapan Thapa (Super Admin)';
+      foundAdmin.password = 'admin@123';
+      foundAdmin.role = 'SUPER_ADMIN';
+      foundAdmin.status = 'active';
+      foundAdmin.emailVerified = true;
+    }
+
     const initial: DatabaseSchema = {
       catalogs: defaultCatalogs,
       games: defaultGames,
@@ -92,7 +134,7 @@ class Database {
       promoCodes: defaultPromoCodes,
       offers: defaultOffers,
       settings: defaultSettings,
-      users: defaultUsers,
+      users: initialUsers,
       orders: defaultOrders,
       supportTickets: defaultSupportTickets,
       auditLogs: defaultAuditLogs,
@@ -939,7 +981,17 @@ class Database {
   }
 
   getUserByPhone(phone: string): User | undefined {
-    return this.data.users.find(u => u.phone === phone);
+    const cleanPhone = phone.replace(/\D/g, '').slice(-10);
+    if (!cleanPhone) return undefined;
+    return this.data.users.find(u => {
+      if (!u.phone) return false;
+      const uClean = u.phone.replace(/\D/g, '').slice(-10);
+      return uClean === cleanPhone;
+    });
+  }
+
+  getUserByGoogleId(googleId: string): User | undefined {
+    return this.data.users.find(u => u.googleId === googleId);
   }
 
   createUser(user: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'status'>): User {
@@ -962,6 +1014,18 @@ class Database {
     this.data.users[idx] = { ...this.data.users[idx], ...updates, updatedAt: new Date().toISOString() };
     this.persist();
     return this.data.users[idx];
+  }
+
+  deleteUser(id: string): boolean {
+    const idx = this.data.users.findIndex(u => u.id === id);
+    if (idx === -1) return false;
+    this.data.users.splice(idx, 1);
+    this.persist();
+    return true;
+  }
+
+  getStaffUsers(): User[] {
+    return this.data.users.filter(u => u.role !== 'CUSTOMER');
   }
 
   // Analytics Stats for Admin Dashboard

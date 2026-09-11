@@ -1,4 +1,193 @@
 {
+  "catalogs": [
+    {
+      "id": "cat-game-mobile",
+      "name": "Mobile",
+      "slug": "mobile",
+      "type": "game",
+      "description": "Smartphone & tablet titles for Android and iOS devices",
+      "icon": "Smartphone",
+      "badge": "POPULAR",
+      "sortOrder": 1,
+      "active": true
+    },
+    {
+      "id": "cat-game-pc",
+      "name": "PC",
+      "slug": "pc",
+      "type": "game",
+      "description": "PC Windows desktop & laptop games (Steam, Riot, Epic Games)",
+      "icon": "Monitor",
+      "badge": "HOT",
+      "sortOrder": 2,
+      "active": true
+    },
+    {
+      "id": "cat-game-webgame",
+      "name": "Web Game",
+      "slug": "webgame",
+      "type": "game",
+      "description": "Browser-based, HTML5 & instant-play web games",
+      "icon": "Globe",
+      "badge": "INSTANT",
+      "sortOrder": 3,
+      "active": true
+    },
+    {
+      "id": "cat-game-xbox",
+      "name": "Xbox",
+      "slug": "xbox",
+      "type": "game",
+      "description": "Xbox Series X|S, Xbox One & Xbox Live console titles",
+      "icon": "Gamepad",
+      "badge": "CONSOLE",
+      "sortOrder": 4,
+      "active": true
+    },
+    {
+      "id": "cat-card-mobile-game",
+      "name": "Mobile Game Cards",
+      "slug": "mobile-game-cards",
+      "type": "card",
+      "description": "Prepaid redeem vouchers for top mobile gaming titles",
+      "icon": "Smartphone",
+      "badge": "HOT",
+      "sortOrder": 1,
+      "active": true
+    },
+    {
+      "id": "cat-card-game-cards",
+      "name": "Game Cards",
+      "slug": "game-cards",
+      "type": "card",
+      "description": "In-game points, battle pass and virtual currency digital cards",
+      "icon": "Gamepad2",
+      "badge": "POPULAR",
+      "sortOrder": 2,
+      "active": true
+    },
+    {
+      "id": "cat-card-payment-cards",
+      "name": "Payment Cards",
+      "slug": "payment-cards",
+      "type": "card",
+      "description": "Digital wallet & reload payment cards (Razer Gold, Binance, WebMoney)",
+      "icon": "CreditCard",
+      "badge": "VERIFIED",
+      "sortOrder": 3,
+      "active": true
+    },
+    {
+      "id": "cat-card-gift-cards",
+      "name": "Gift Cards",
+      "slug": "gift-cards",
+      "type": "card",
+      "description": "Global top brand digital vouchers (Google Play, Apple, Steam Wallet)",
+      "icon": "Gift",
+      "badge": "BESTSELLER",
+      "sortOrder": 4,
+      "active": true
+    },
+    {
+      "id": "cat-card-game-console",
+      "name": "Game Console",
+      "slug": "game-console",
+      "type": "card",
+      "description": "PlayStation Network (PSN), Xbox Game Pass & Nintendo eShop vouchers",
+      "icon": "Tv",
+      "badge": "CONSOLE",
+      "sortOrder": 5,
+      "active": true
+    },
+    {
+      "id": "cat-card-game-cdkey",
+      "name": "Game CD-Key",
+      "slug": "game-cd-key",
+      "type": "card",
+      "description": "Full digital activation license CD-keys for PC, Steam & console titles",
+      "icon": "Key",
+      "badge": "INSTANT",
+      "sortOrder": 6,
+      "active": true
+    },
+    {
+      "id": "cat-card-video-streaming",
+      "name": "Video Streaming",
+      "slug": "video-streaming",
+      "type": "card",
+      "description": "OTT streaming platform subscriptions (Netflix, Prime Video, Disney+)",
+      "icon": "Film",
+      "badge": "STREAMING",
+      "sortOrder": 7,
+      "active": true
+    },
+    {
+      "id": "cat-card-music",
+      "name": "Music",
+      "slug": "music",
+      "type": "card",
+      "description": "Music streaming premium subscription vouchers (Spotify, Apple Music)",
+      "icon": "Headphones",
+      "badge": "MUSIC",
+      "sortOrder": 8,
+      "active": true
+    },
+    {
+      "id": "cat-card-shopping",
+      "name": "Shopping",
+      "slug": "shopping",
+      "type": "card",
+      "description": "Online retail & e-commerce shopping gift cards (Amazon, Daraz, eBay)",
+      "icon": "ShoppingBag",
+      "badge": "",
+      "sortOrder": 9,
+      "active": true
+    },
+    {
+      "id": "cat-card-tools",
+      "name": "Tools",
+      "slug": "tools",
+      "type": "card",
+      "description": "VPN subscriptions, utility licenses, developer and cloud productivity tools",
+      "icon": "Wrench",
+      "badge": "TOOLS",
+      "sortOrder": 10,
+      "active": true
+    },
+    {
+      "id": "cat-card-software",
+      "name": "Software",
+      "slug": "software",
+      "type": "card",
+      "description": "Windows OS keys, antivirus security, Microsoft Office & creative suites",
+      "icon": "Laptop",
+      "badge": "SOFTWARE",
+      "sortOrder": 11,
+      "active": true
+    },
+    {
+      "id": "cat-card-social-app",
+      "name": "Social App",
+      "slug": "social-app",
+      "type": "card",
+      "description": "Social credits & community perks (Discord Nitro, Telegram Premium, Tinder)",
+      "icon": "MessageCircle",
+      "badge": "TRENDING",
+      "sortOrder": 12,
+      "active": true
+    },
+    {
+      "id": "cat-card-subscription",
+      "name": "Subscription",
+      "slug": "subscription",
+      "type": "card",
+      "description": "Monthly and annual membership passes for gaming, entertainment & apps",
+      "icon": "Calendar",
+      "badge": "VIP",
+      "sortOrder": 13,
+      "active": true
+    }
+  ],
   "games": [
     {
       "id": "game-pubg",
@@ -898,15 +1087,17 @@
   "users": [
     {
       "id": "usr-admin-1",
-      "name": "Suman Shrestha (Super Admin)",
-      "email": "admin@gamingzone.com.np",
+      "name": "Sapan Thapa (Super Admin)",
+      "email": "sapanthapa49@gmail.com",
       "phone": "+977 9841000001",
       "photoUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
       "authProvider": "email",
       "role": "SUPER_ADMIN",
       "status": "active",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-09-10T00:00:00Z"
+      "updatedAt": "2026-09-10T00:00:00Z",
+      "password": "admin@123",
+      "emailVerified": true
     },
     {
       "id": "usr-mgr-1",
@@ -924,13 +1115,27 @@
       "id": "usr-demo-customer",
       "name": "Aayush Maharjan",
       "email": "demo@gamingzone.com.np",
-      "phone": "+977 9841234567",
+      "phone": "+977-9841234567",
       "photoUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
       "authProvider": "email",
       "role": "CUSTOMER",
       "status": "active",
       "createdAt": "2026-03-01T00:00:00Z",
-      "updatedAt": "2026-09-10T00:00:00Z"
+      "updatedAt": "2026-09-11T10:47:23.212Z",
+      "phoneVerified": true
+    },
+    {
+      "name": "Suman Shrestha",
+      "email": "nepalgamer.google@gmail.com",
+      "photoUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
+      "authProvider": "google",
+      "role": "CUSTOMER",
+      "googleId": "google-1789123672297",
+      "emailVerified": true,
+      "id": "usr-1789123672297",
+      "status": "active",
+      "createdAt": "2026-09-11T10:47:52.297Z",
+      "updatedAt": "2026-09-11T10:47:52.297Z"
     }
   ],
   "orders": [
@@ -1226,6 +1431,17 @@
       "details": "Transitioned order GZ-20260910-000102 to \"Completed\". Note: None",
       "id": "aud-1789054268926-208",
       "createdAt": "2026-09-10T15:31:08.926Z"
+    },
+    {
+      "adminId": "usr-1789123672297",
+      "adminName": "Suman Shrestha",
+      "adminRole": "CUSTOMER",
+      "action": "CUSTOMER_GOOGLE_SIGNUP",
+      "targetType": "user",
+      "targetId": "usr-1789123672297",
+      "details": "New customer registered via verified Google Identity Services: nepalgamer.google@gmail.com",
+      "id": "aud-1789123672298-148",
+      "createdAt": "2026-09-11T10:47:52.298Z"
     }
   ],
   "notifications": [

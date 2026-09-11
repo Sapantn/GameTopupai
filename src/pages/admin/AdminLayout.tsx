@@ -36,6 +36,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
     { tab: 'support', label: 'Support Tickets', icon: MessageSquare },
     { tab: 'audit-logs', label: 'Audit Trail Logs', icon: History },
     { tab: 'settings', label: 'Website Settings', icon: Settings },
+    { tab: 'staff', label: 'Staff & Access Control', icon: UserCheck },
   ];
 
   return (
