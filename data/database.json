@@ -928,7 +928,9 @@
       "instructions": "1. Open eSewa app on your phone.\n2. Send exact NPR amount to eSewa ID: 9812345678 (GamingZone Nepal Pvt Ltd).\n3. In remarks, mention your Phone or In-game name.\n4. Take a screenshot of the completed transaction.\n5. Copy the 16-digit Reference Code and submit below.",
       "active": true,
       "sortOrder": 1,
-      "badge": "Most Popular in Nepal"
+      "badge": "Most Popular in Nepal",
+      "accountNumber": "9767281535",
+      "qrCodeUrl": "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=esewa://payment?recipient=9812345678&name=GamingZoneNepal"
     },
     {
       "id": "pay-khalti",
@@ -979,18 +981,6 @@
       "instructions": "Bank: NIC Asia Bank Ltd\nBranch: New Road, Kathmandu\nAccount Name: GamingZone Nepal Private Limited\nAccount Number: 019283746501001\n\nTransfer via ConnectIPS or Mobile Banking, take receipt screenshot.",
       "active": true,
       "sortOrder": 5
-    },
-    {
-      "id": "pay-crypto",
-      "code": "crypto",
-      "name": "Cryptocurrency (USDT - TRC20 / BEP20)",
-      "logoUrl": "https://images.unsplash.com/photo-1622979135225-d2ba269bc1df?auto=format&fit=crop&w=120&q=80",
-      "accountName": "GamingZone Nepal USDT Escrow",
-      "accountIdentifier": "TRC20: TLqS89z...GamingZoneTRC20Escrow",
-      "qrUrl": "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=TRC20:TLqS89z98xPzPzGamingZoneNepal",
-      "instructions": "1. Calculate USDT equivalent (1 USDT ≈ NPR 138.50).\n2. Send exact USDT to TRC20 Address: TLqS89z98xPzPzGamingZoneNepalTRC20\n3. Provide TxHash (Transaction Hash) and screenshot.",
-      "active": true,
-      "sortOrder": 6
     }
   ],
   "promoCodes": [
@@ -1072,17 +1062,22 @@
     "websiteName": "GamingZone Top-up Center",
     "siteSubtitle": "Nepal’s #1 Trusted Game Top-Up Marketplace",
     "contactEmail": "support@gamingzone.com.np",
-    "supportPhone": "+977 9801234567",
-    "whatsappNumber": "+9779801234567",
+    "supportPhone": "+977 9767281535",
+    "whatsappNumber": "+977 9742506569/9767281535",
     "whatsappLink": "https://wa.me/9779801234567?text=Hi%20GamingZone%20Team%2C%20I%20need%20assistance%20with%20my%20order",
     "telegramLink": "https://t.me/GamingZoneNepal",
     "facebookLink": "https://facebook.com/GamingZoneNepalOfficial",
     "currency": "NPR",
     "currencySymbol": "NPR ",
     "orderProcessingNotice": "All top-ups are manually processed by our operations team in Kathmandu within 5 to 20 minutes of payment verification.",
-    "maintenanceMode": false,
+    "maintenanceMode": true,
     "minOrderAmount": 50,
-    "supportHours": "8:00 AM – 11:30 PM NST (7 Days a Week)"
+    "supportHours": "24/7",
+    "siteName": "GamingZone Top-up Center",
+    "supportEmail": "support@gamingzone.com.np",
+    "supportWhatsApp": "+977 9742506569/9767281535",
+    "announcementBanner": "Get Up to 20% Extra UC & Diamonds with eSewa/Khalti!",
+    "operatingHours": "24/7"
   },
   "users": [
     {
@@ -1136,6 +1131,19 @@
       "status": "active",
       "createdAt": "2026-09-11T10:47:52.297Z",
       "updatedAt": "2026-09-11T10:47:52.297Z"
+    },
+    {
+      "name": "Bikash Karki",
+      "email": "bikash@gamingzone.np",
+      "phone": "+977 9812345678",
+      "password": "gamerpassword123",
+      "authProvider": "email",
+      "role": "CUSTOMER",
+      "emailVerified": false,
+      "id": "usr-1789126107056",
+      "status": "active",
+      "createdAt": "2026-09-11T11:28:27.056Z",
+      "updatedAt": "2026-09-11T11:29:11.543Z"
     }
   ],
   "orders": [
@@ -1442,6 +1450,68 @@
       "details": "New customer registered via verified Google Identity Services: nepalgamer.google@gmail.com",
       "id": "aud-1789123672298-148",
       "createdAt": "2026-09-11T10:47:52.298Z"
+    },
+    {
+      "action": "USER_REGISTERED",
+      "performedBy": "usr-1789126107056",
+      "details": "New user registration: Bikash Karki (bikash@gamingzone.np) as CUSTOMER",
+      "id": "aud-1789126107057-826",
+      "createdAt": "2026-09-11T11:28:27.057Z"
+    },
+    {
+      "adminId": "usr-admin-1",
+      "adminName": "Sapan Thapa (Super Admin)",
+      "adminRole": "SUPER_ADMIN",
+      "action": "STAFF_ROLE_ASSIGNED",
+      "targetType": "setting",
+      "targetId": "usr-1789126107056",
+      "details": "Assigned role ORDER_MANAGER to existing account \"Bikash Karki\" (bikash@gamingzone.np)",
+      "id": "aud-1789126142271-295",
+      "createdAt": "2026-09-11T11:29:02.271Z"
+    },
+    {
+      "adminId": "usr-admin-1",
+      "adminName": "Sapan Thapa (Super Admin)",
+      "adminRole": "SUPER_ADMIN",
+      "action": "STAFF_ACCESS_REVOKED",
+      "targetType": "setting",
+      "targetId": "usr-1789126107056",
+      "details": "Revoked staff access for \"Bikash Karki\" (bikash@gamingzone.np). Role converted to CUSTOMER.",
+      "id": "aud-1789126151543-780",
+      "createdAt": "2026-09-11T11:29:11.543Z"
+    },
+    {
+      "adminId": "usr-1789126107056",
+      "adminName": "Bikash Karki",
+      "adminRole": "CUSTOMER",
+      "action": "UNAUTHORIZED_ADMIN_ACCESS_ATTEMPT",
+      "targetType": "user",
+      "targetId": "usr-1789126107056",
+      "details": "Customer account \"Bikash Karki\" (bikash@gamingzone.np) attempted unauthorized access to administrative module \"orders\". Access blocked by server security gate.",
+      "id": "aud-1789126153920-812",
+      "createdAt": "2026-09-11T11:29:13.920Z"
+    },
+    {
+      "adminId": "usr-admin-1",
+      "adminName": "Sapan Thapa (Super Admin)",
+      "adminRole": "SUPER_ADMIN",
+      "action": "CREATE_CHATBOT_TRIGGER",
+      "targetType": "setting",
+      "targetId": "trig-1789733977555-ult0",
+      "details": "Created AI chatbot trigger \"Tournament Info\" with keywords [tournament, scrims, esports]",
+      "id": "aud-1789733977555-284",
+      "createdAt": "2026-09-18T12:19:37.555Z"
+    },
+    {
+      "adminId": "usr-admin-1",
+      "adminName": "Sapan Thapa (Super Admin)",
+      "adminRole": "SUPER_ADMIN",
+      "action": "DELETE_CHATBOT_TRIGGER",
+      "targetType": "setting",
+      "targetId": "trig-1789733977555-ult0",
+      "details": "Deleted AI chatbot trigger \"Tournament Info\"",
+      "id": "aud-1789733987325-823",
+      "createdAt": "2026-09-18T12:19:47.325Z"
     }
   ],
   "notifications": [
@@ -1493,6 +1563,122 @@
       "id": "notif-1789054268927-289",
       "createdAt": "2026-09-10T15:31:08.927Z",
       "read": false
+    }
+  ],
+  "chatbotTriggers": [
+    {
+      "id": "trig-discord",
+      "name": "Discord & Gamer Community",
+      "triggers": [
+        "discord",
+        "community",
+        "whatsapp group",
+        "facebook group",
+        "viber"
+      ],
+      "matchType": "contains",
+      "reply": "🎮 **Join the GamingZone Nepal Gamer Community!**\n\nConnect with 5,000+ local gamers, catch exclusive flash giveaways, and get instant updates:\n\n• **Official Discord:** https://discord.gg/gamingzonenp\n• **WhatsApp Alert Channel:** https://chat.whatsapp.com/gamingzone\n• **Facebook Community:** https://facebook.com/groups/gamingzonenepal\n\nSee you inside the lobby! 🚀",
+      "suggestions": [
+        "Browse Games",
+        "Nepal Payment Methods",
+        "Track Order"
+      ],
+      "active": true,
+      "priority": 10,
+      "hitCount": 15,
+      "createdAt": "2026-03-01T00:00:00Z",
+      "updatedAt": "2026-09-18T00:00:00Z"
+    },
+    {
+      "id": "trig-refund",
+      "name": "Refunds & Wrong Player ID",
+      "triggers": [
+        "refund",
+        "cancel",
+        "money back",
+        "wrong id",
+        "cancellation"
+      ],
+      "matchType": "contains",
+      "reply": "🛡️ **Refund & Cancellation Policy**\n\n• **Pending/Processing Orders:** If delivery has not started, you can request an immediate refund back to your eSewa/Khalti wallet minus a 2% gateway processing fee.\n• **Completed Top-ups:** Due to direct crediting of in-game currency (UC, Diamonds), once delivered to the entered ID, orders cannot be revoked.\n• **Submitted Wrong ID?** WhatsApp our Kathmandu operations desk immediately at **+977 9841000001** before fulfillment begins!",
+      "suggestions": [
+        "Contact Support",
+        "Track My Order",
+        "View WhatsApp"
+      ],
+      "active": true,
+      "priority": 9,
+      "hitCount": 23,
+      "createdAt": "2026-03-01T00:00:00Z",
+      "updatedAt": "2026-09-18T00:00:00Z"
+    },
+    {
+      "id": "trig-delivery-time",
+      "name": "Delivery Speed & Operating Time",
+      "triggers": [
+        "how long",
+        "delivery time",
+        "speed",
+        "operating hours",
+        "time taken",
+        "when will i get"
+      ],
+      "matchType": "contains",
+      "reply": "⚡ **Delivery Guarantee: 5 to 15 Minutes**\n\n• **Kathmandu Operations Team:** Live 7 days a week from **8:00 AM – 11:30 PM NST**.\n• **Typical UC / Diamonds Turnaround:** 3–7 minutes once your eSewa, Khalti, or Fonepay receipt screenshot is verified.\n• **Late Night Orders:** Orders placed after 11:30 PM NST are fulfilled first thing in the 8:00 AM morning queue.",
+      "suggestions": [
+        "Check Order Status",
+        "Payment Methods",
+        "PUBG UC Packages"
+      ],
+      "active": true,
+      "priority": 8,
+      "hitCount": 35,
+      "createdAt": "2026-03-01T00:00:00Z",
+      "updatedAt": "2026-09-18T00:00:00Z"
+    },
+    {
+      "id": "trig-roblox",
+      "name": "Roblox Robux in Nepal",
+      "triggers": [
+        "robux",
+        "roblox"
+      ],
+      "matchType": "contains",
+      "reply": "🧱 **Roblox Robux & Gift Cards in Nepal (NPR)**\n\nWe provide 100% genuine Roblox Digital Gift Cards and direct Robux voucher codes:\n\n• **Instant Code Delivery:** Delivered directly to your order receipt and email.\n• **No International Card Needed:** Pay in NPR using eSewa, Khalti, or Fonepay.\n\nBrowse the Roblox card in our catalog to select your package!",
+      "suggestions": [
+        "Roblox Packages",
+        "eSewa Payment",
+        "How it Works"
+      ],
+      "active": true,
+      "priority": 7,
+      "hitCount": 19,
+      "createdAt": "2026-03-01T00:00:00Z",
+      "updatedAt": "2026-09-18T00:00:00Z"
+    },
+    {
+      "id": "trig-discount",
+      "name": "Discounts & Promo Codes",
+      "triggers": [
+        "promo",
+        "coupon",
+        "discount",
+        "voucher",
+        "offer",
+        "cheap"
+      ],
+      "matchType": "contains",
+      "reply": "🏷️ **Active Promo Codes & Discounts**\n\n• Use code **NEPALGAMER** at checkout for up to **10% OFF** your top-up.\n• We also run festival bonus top-ups (up to 20% extra UC/Diamonds) during Dashain, Tihar, and major tournaments.\n\nApply the promo code directly during step 4 of checkout!",
+      "suggestions": [
+        "View Offers",
+        "Browse Games",
+        "eSewa Payment"
+      ],
+      "active": true,
+      "priority": 6,
+      "hitCount": 42,
+      "createdAt": "2026-03-01T00:00:00Z",
+      "updatedAt": "2026-09-18T00:00:00Z"
     }
   ]
 }

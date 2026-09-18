@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../lib/api';
 import { PaymentMethod } from '../../types';
-import { QrCode, Plus, Edit2, Check, ExternalLink } from 'lucide-react';
+import { QrCode, Plus, Edit2, Trash2, Check, ExternalLink } from 'lucide-react';
 
 export const AdminPaymentMethods: React.FC = () => {
   const { addToast } = useApp();
@@ -40,8 +40,8 @@ export const AdminPaymentMethods: React.FC = () => {
     setEditingMethod(pm);
     setName(pm.name);
     setAccountName(pm.accountName);
-    setAccountNumber(pm.accountNumber);
-    setQrCodeUrl(pm.qrCodeUrl);
+    setAccountNumber(pm.accountNumber || pm.accountIdentifier || '');
+    setQrCodeUrl(pm.qrCodeUrl || pm.qrUrl || '');
     setInstructions(pm.instructions);
     setActive(pm.active);
     setModalOpen(true);
@@ -56,6 +56,19 @@ export const AdminPaymentMethods: React.FC = () => {
     setInstructions('Scan the QR code or send payment to our official account. Keep the screenshot.');
     setActive(true);
     setModalOpen(true);
+  };
+
+  const handleDelete = async (id: string, methodName: string) => {
+    if (!window.confirm(`Are you sure you want to remove the payment method "${methodName}"?`)) {
+      return;
+    }
+    try {
+      await api.deletePaymentMethod(id);
+      addToast(`Payment gateway "${methodName}" has been removed.`, 'success');
+      fetchMethods();
+    } catch (err) {
+      addToast('Failed to delete payment gateway.', 'error');
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -131,12 +144,22 @@ export const AdminPaymentMethods: React.FC = () => {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => openEdit(pm)}
-                  className="p-2 rounded-xl bg-slate-800 hover:bg-purple-600 text-slate-300 hover:text-white transition-colors"
-                >
-                  <Edit2 className="w-4 h-4" />
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => openEdit(pm)}
+                    className="p-2 rounded-xl bg-slate-800 hover:bg-purple-600 text-slate-300 hover:text-white transition-colors"
+                    title="Edit Payment Gateway"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(pm.id, pm.name)}
+                    className="p-2 rounded-xl bg-slate-800 hover:bg-red-600 text-slate-300 hover:text-white transition-colors"
+                    title="Delete Payment Gateway"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
               <div className="space-y-2 pt-4 text-xs">
@@ -261,6 +284,21 @@ export const AdminPaymentMethods: React.FC = () => {
               </div>
 
               <div className="flex gap-2 pt-3">
+                {editingMethod && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const id = editingMethod.id;
+                      const name = editingMethod.name;
+                      setModalOpen(false);
+                      handleDelete(id, name);
+                    }}
+                    className="px-3.5 py-2.5 rounded-xl bg-red-950/60 hover:bg-red-900 border border-red-500/40 text-red-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Delete</span>
+                  </button>
+                )}
                 <button
                   type="submit"
                   className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition-colors"

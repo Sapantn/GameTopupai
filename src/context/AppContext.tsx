@@ -25,6 +25,7 @@ export type AdminTab =
   | 'promo-codes'
   | 'offers'
   | 'support'
+  | 'chatbot'
   | 'audit-logs'
   | 'settings'
   | 'staff';
@@ -87,6 +88,8 @@ interface AppContextType {
   logout: () => void;
   orderLookupOpen: boolean;
   setOrderLookupOpen: (open: boolean) => void;
+  chatbotOpen: boolean;
+  setChatbotOpen: (open: boolean) => void;
   notificationsOpen: boolean;
   setNotificationsOpen: (open: boolean) => void;
   notifications: NotificationItem[];
@@ -153,6 +156,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [selectedCatalog, setSelectedCatalog] = useState<string>('all');
 
   const [orderLookupOpen, setOrderLookupOpen] = useState(false);
+  const [chatbotOpen, setChatbotOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
@@ -441,6 +445,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         logout,
         orderLookupOpen,
         setOrderLookupOpen,
+        chatbotOpen,
+        setChatbotOpen,
         notificationsOpen,
         setNotificationsOpen,
         notifications,

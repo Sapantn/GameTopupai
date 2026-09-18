@@ -13,11 +13,12 @@ import {
   Plus,
   HelpCircle,
   ShieldCheck,
-  User
+  User,
+  Bot
 } from 'lucide-react';
 
 export const SupportPage: React.FC = () => {
-  const { user, addToast } = useApp();
+  const { user, addToast, setChatbotOpen } = useApp();
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null);
   const [loading, setLoading] = useState(true);
@@ -142,6 +143,13 @@ export const SupportPage: React.FC = () => {
         </div>
 
         <div className="flex flex-wrap gap-2.5">
+          <button
+            onClick={() => setChatbotOpen(true)}
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 border border-cyan-400/50 text-white font-bold text-xs flex items-center gap-2 hover:from-cyan-500 hover:to-indigo-500 transition-all shadow-lg shadow-cyan-500/20"
+          >
+            <Bot className="w-4 h-4 text-cyan-200" />
+            <span>Chat with ZoneBot AI</span>
+          </button>
           <a
             href="https://wa.me/9779801234567"
             target="_blank"
@@ -162,7 +170,24 @@ export const SupportPage: React.FC = () => {
       </div>
 
       {/* Direct Contact Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <button
+          onClick={() => setChatbotOpen(true)}
+          className="p-4 rounded-2xl bg-gradient-to-br from-[#121832] to-[#171434] border border-cyan-500/40 hover:border-cyan-400 flex items-center gap-3 text-left transition-all group"
+        >
+          <div className="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center shrink-0 text-cyan-400 group-hover:scale-110 transition-transform">
+            <Bot className="w-5 h-5" />
+          </div>
+          <div>
+            <span className="text-[10px] text-cyan-400 uppercase font-bold">24/7 AI Assistant</span>
+            <p className="text-xs font-bold text-white">ZoneBot AI</p>
+            <span className="text-[10px] text-emerald-400 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Instant answers &bull; 0s wait
+            </span>
+          </div>
+        </button>
+
         <div className="p-4 rounded-2xl bg-[#111424] border border-slate-800 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-950 border border-emerald-500/40 flex items-center justify-center shrink-0">
             <MessageSquare className="w-5 h-5 text-emerald-400" />
@@ -191,7 +216,7 @@ export const SupportPage: React.FC = () => {
           </div>
           <div>
             <span className="text-[10px] text-slate-400 uppercase font-bold">Official Email</span>
-            <p className="text-xs font-bold text-white">support@gamingzone.com.np</p>
+            <p className="text-xs font-bold text-white truncate">support@gamingzone.com.np</p>
             <span className="text-[10px] text-slate-400">Tickets &amp; Receipts</span>
           </div>
         </div>

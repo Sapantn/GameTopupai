@@ -13,7 +13,8 @@ import {
   SupportTicket,
   AuditLog,
   NotificationItem,
-  ServerAdminVerificationResult
+  ServerAdminVerificationResult,
+  ChatbotTrigger
 } from '../types';
 
 import {
@@ -1009,6 +1010,99 @@ export const api = {
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
       throw new Error(data.error || 'Failed to revoke staff access.');
+    }
+    return data;
+  },
+
+  // --- AI Chatbot Assistant ---
+  async sendChatMessage(
+    message: string,
+    history?: Array<{ role: 'user' | 'model' | 'assistant'; text: string }>,
+    userId?: string
+  ): Promise<{
+    reply: string;
+    orderInfo?: {
+      id: string;
+      status: string;
+      gameName: string;
+      amount: number;
+      paymentMethod: string;
+    };
+    suggestions?: string[];
+  }> {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(userId ? { 'x-user-id': userId } : {})
+      },
+      body: JSON.stringify({ message, history })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to communicate with AI Chatbot.');
+    }
+    return data;
+  },
+
+  // --- AI Chatbot Triggers & Auto-Responses ---
+  async getChatbotTriggers(active?: boolean, adminUserId?: string): Promise<ChatbotTrigger[]> {
+    const qs = active ? '?active=true' : '';
+    const res = await fetch(`/api/chatbot-triggers${qs}`, {
+      headers: getHeaders(adminUserId)
+    });
+    if (!res.ok) {
+      throw new Error('Failed to load chatbot trigger rules');
+    }
+    return await res.json();
+  },
+
+  async createChatbotTrigger(trigger: Partial<ChatbotTrigger>, adminUserId?: string): Promise<ChatbotTrigger> {
+    const res = await fetch('/api/chatbot-triggers', {
+      method: 'POST',
+      headers: getHeaders(adminUserId),
+      body: JSON.stringify(trigger)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to create chatbot trigger rule');
+    }
+    return data;
+  },
+
+  async updateChatbotTrigger(id: string, updates: Partial<ChatbotTrigger>, adminUserId?: string): Promise<ChatbotTrigger> {
+    const res = await fetch(`/api/chatbot-triggers/${id}`, {
+      method: 'PUT',
+      headers: getHeaders(adminUserId),
+      body: JSON.stringify(updates)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to update chatbot trigger rule');
+    }
+    return data;
+  },
+
+  async deleteChatbotTrigger(id: string, adminUserId?: string): Promise<{ success: boolean }> {
+    const res = await fetch(`/api/chatbot-triggers/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders(adminUserId)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to delete chatbot trigger rule');
+    }
+    return data;
+  },
+
+  async toggleChatbotTrigger(id: string, adminUserId?: string): Promise<ChatbotTrigger> {
+    const res = await fetch(`/api/chatbot-triggers/${id}/toggle`, {
+      method: 'POST',
+      headers: getHeaders(adminUserId)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to toggle chatbot trigger rule');
     }
     return data;
   }

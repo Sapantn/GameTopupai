@@ -24,6 +24,7 @@ export const TAB_ROLE_PERMISSIONS: Record<AdminTab, readonly UserRole[]> = {
   'promo-codes': ['SUPER_ADMIN', 'CONTENT_MANAGER'],
   offers: ['SUPER_ADMIN', 'CONTENT_MANAGER'],
   support: ['SUPER_ADMIN', 'SUPPORT_AGENT'],
+  chatbot: ['SUPER_ADMIN', 'CONTENT_MANAGER', 'SUPPORT_AGENT'],
   'audit-logs': ['SUPER_ADMIN', 'ORDER_MANAGER'],
   settings: ['SUPER_ADMIN'],
   staff: ['SUPER_ADMIN'],

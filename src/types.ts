@@ -130,7 +130,7 @@ export interface Game {
 
 export interface PaymentMethod {
   id: string;
-  code: 'esewa' | 'khalti' | 'fonepay' | 'imepay' | 'connectips' | 'bank' | 'card' | 'crypto';
+  code: 'esewa' | 'khalti' | 'fonepay' | 'imepay' | 'connectips' | 'bank' | 'card' | string;
   name: string;
   logoUrl?: string;
   accountName: string;
@@ -315,6 +315,20 @@ export interface WebsiteSettings {
 }
 
 export type SiteSettings = WebsiteSettings;
+
+export interface ChatbotTrigger {
+  id: string;
+  name: string; // Descriptive name (e.g. "Community Discord & WhatsApp", "Refund Policy")
+  triggers: string[]; // Keywords or phrases that activate this trigger
+  matchType: 'contains' | 'exact'; // Whether message must contain any trigger or exactly match
+  reply: string; // The response message to send (supports bold and linebreaks)
+  suggestions?: string[]; // Quick-reply suggestion chips offered to customer
+  active: boolean; // Enable or disable this trigger rule
+  priority: number; // Execution order (higher evaluated first)
+  hitCount?: number; // Statistics on how many times this trigger fired
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface ServerAdminVerificationResult {
   allowed: boolean;

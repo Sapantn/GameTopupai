@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import { db } from './server/db';
+import { handleChatMessage } from './server/gemini';
 import { OrderStatus, User, UserRole } from './src/types';
 
 async function startServer() {
@@ -22,7 +23,10 @@ async function startServer() {
 
   // Lightweight user session simulation via Header (or token)
   const getUserFromReq = (req: Request): User | undefined => {
-    const authHeader = (req.headers['x-user-id'] as string) || (req.headers['authorization'] as string)?.replace('Bearer ', '');
+    const authHeader =
+      (req.headers['x-user-id'] as string) ||
+      (req.headers['x-admin-user-id'] as string) ||
+      (req.headers['authorization'] as string)?.replace('Bearer ', '');
     if (authHeader) {
       return db.getUserById(authHeader) || db.getUserByEmail(authHeader);
     }
@@ -68,15 +72,21 @@ async function startServer() {
     }
   });
 
+  // Health check endpoint
+  app.get('/api/health', (req: Request, res: Response) => {
+    res.json({ status: 'ok', time: new Date().toISOString() });
+  });
+
   // --- Auth Endpoints ---
   app.post('/api/auth/login', (req: Request, res: Response) => {
-    const { emailOrPhone, password, role } = req.body;
+    const rawInput = req.body.emailOrPhone || req.body.email || req.body.phone || req.body.username;
+    const { password, role } = req.body;
 
-    if (!emailOrPhone) {
+    if (!rawInput) {
       return res.status(400).json({ error: 'Email or phone number is required.' });
     }
 
-    const cleanInput = (emailOrPhone || '').trim();
+    const cleanInput = String(rawInput).trim();
     const isSuperAdmin = cleanInput.toLowerCase() === 'sapanthapa49@gmail.com';
 
     // Super Admin check
@@ -525,6 +535,7 @@ async function startServer() {
     'promo-codes': ['SUPER_ADMIN', 'CONTENT_MANAGER'],
     offers: ['SUPER_ADMIN', 'CONTENT_MANAGER'],
     support: ['SUPER_ADMIN', 'SUPPORT_AGENT'],
+    chatbot: ['SUPER_ADMIN', 'CONTENT_MANAGER', 'SUPPORT_AGENT'],
     'audit-logs': ['SUPER_ADMIN', 'ORDER_MANAGER'],
     settings: ['SUPER_ADMIN'],
     staff: ['SUPER_ADMIN'],
@@ -1329,6 +1340,121 @@ async function startServer() {
   app.put('/api/settings', (req: Request, res: Response) => {
     const user = getUserFromReq(req);
     const updated = db.updateSettings(req.body, user);
+    res.json(updated);
+  });
+
+  // --- AI Chatbot Endpoint (Gemini 3.8 Flash Server-Side) ---
+  app.post('/api/chat', async (req: Request, res: Response) => {
+    try {
+      const { message, history } = req.body;
+      const user = getUserFromReq(req);
+      const result = await handleChatMessage({
+        message,
+        history,
+        userId: user?.id,
+      });
+      res.json(result);
+    } catch (err: any) {
+      console.error('Chat endpoint error:', err);
+      res.status(500).json({
+        reply: 'I am currently experiencing a momentary hiccup. Please try again or check our Support page.',
+        suggestions: ['How to buy UC?', 'Nepal payment methods', 'Order help']
+      });
+    }
+  });
+
+  // --- AI Chatbot Triggers & Auto-Responses Endpoints ---
+  app.get('/api/chatbot-triggers', (req: Request, res: Response) => {
+    const onlyActive = req.query.active === 'true';
+    res.json(db.getChatbotTriggers(onlyActive));
+  });
+
+  app.post('/api/chatbot-triggers', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    const { name, triggers, matchType, reply, suggestions, active, priority } = req.body;
+
+    if (!name || !triggers || !Array.isArray(triggers) || triggers.length === 0 || !reply) {
+      return res.status(400).json({ error: 'Name, trigger keywords/phrases, and reply message are required.' });
+    }
+
+    const created = db.createChatbotTrigger({
+      name: String(name).trim(),
+      triggers: triggers.map((t: any) => String(t).trim()).filter(Boolean),
+      matchType: matchType === 'exact' ? 'exact' : 'contains',
+      reply: String(reply).trim(),
+      suggestions: Array.isArray(suggestions) ? suggestions.map((s: any) => String(s).trim()).filter(Boolean) : [],
+      active: active !== false,
+      priority: Number(priority) || 5
+    });
+
+    if (user) {
+      db.addAuditLog({
+        adminId: user.id,
+        adminName: user.name,
+        adminRole: user.role,
+        action: 'CREATE_CHATBOT_TRIGGER',
+        targetType: 'setting',
+        targetId: created.id,
+        details: `Created AI chatbot trigger "${created.name}" with keywords [${created.triggers.join(', ')}]`
+      });
+    }
+
+    res.status(201).json(created);
+  });
+
+  app.put('/api/chatbot-triggers/:id', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    const updated = db.updateChatbotTrigger(req.params.id, req.body);
+    if (!updated) {
+      return res.status(404).json({ error: 'Chatbot trigger rule not found' });
+    }
+
+    if (user) {
+      db.addAuditLog({
+        adminId: user.id,
+        adminName: user.name,
+        adminRole: user.role,
+        action: 'UPDATE_CHATBOT_TRIGGER',
+        targetType: 'setting',
+        targetId: updated.id,
+        details: `Updated AI chatbot trigger "${updated.name}"`
+      });
+    }
+
+    res.json(updated);
+  });
+
+  app.delete('/api/chatbot-triggers/:id', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    const existing = db.getChatbotTriggerById(req.params.id);
+    const ok = db.deleteChatbotTrigger(req.params.id);
+
+    if (!ok) {
+      return res.status(404).json({ error: 'Chatbot trigger rule not found' });
+    }
+
+    if (user && existing) {
+      db.addAuditLog({
+        adminId: user.id,
+        adminName: user.name,
+        adminRole: user.role,
+        action: 'DELETE_CHATBOT_TRIGGER',
+        targetType: 'setting',
+        targetId: req.params.id,
+        details: `Deleted AI chatbot trigger "${existing.name}"`
+      });
+    }
+
+    res.json({ success: true });
+  });
+
+  app.post('/api/chatbot-triggers/:id/toggle', (req: Request, res: Response) => {
+    const existing = db.getChatbotTriggerById(req.params.id);
+    if (!existing) {
+      return res.status(404).json({ error: 'Chatbot trigger rule not found' });
+    }
+
+    const updated = db.updateChatbotTrigger(req.params.id, { active: !existing.active });
     res.json(updated);
   });
 

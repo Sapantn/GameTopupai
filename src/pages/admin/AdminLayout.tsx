@@ -18,7 +18,8 @@ import {
   AlertTriangle,
   History,
   LogOut,
-  Lock
+  Lock,
+  Bot
 } from 'lucide-react';
 
 export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -34,6 +35,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
     { tab: 'promo-codes', label: 'Promo Codes', icon: Tag },
     { tab: 'offers', label: 'Promotional Banners', icon: Gift },
     { tab: 'support', label: 'Support Tickets', icon: MessageSquare },
+    { tab: 'chatbot', label: 'AI Chatbot Triggers', icon: Bot },
     { tab: 'audit-logs', label: 'Audit Trail Logs', icon: History },
     { tab: 'settings', label: 'Website Settings', icon: Settings },
     { tab: 'staff', label: 'Staff & Access Control', icon: UserCheck },

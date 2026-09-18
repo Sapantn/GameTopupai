@@ -15,7 +15,8 @@ import {
   SupportTicket,
   AuditLog,
   NotificationItem,
-  SupportMessage
+  SupportMessage,
+  ChatbotTrigger
 } from '../src/types';
 import {
   defaultCatalogs,
@@ -28,7 +29,8 @@ import {
   defaultUsers,
   defaultOrders,
   defaultSupportTickets,
-  defaultAuditLogs
+  defaultAuditLogs,
+  defaultChatbotTriggers
 } from './seedData';
 
 export interface DatabaseSchema {
@@ -44,6 +46,7 @@ export interface DatabaseSchema {
   supportTickets: SupportTicket[];
   auditLogs: AuditLog[];
   notifications: NotificationItem[];
+  chatbotTriggers: ChatbotTrigger[];
 }
 
 const DATA_DIR = path.resolve(process.cwd(), 'data');
@@ -107,7 +110,10 @@ class Database {
           orders: parsed.orders || defaultOrders,
           supportTickets: parsed.supportTickets || defaultSupportTickets,
           auditLogs: parsed.auditLogs || defaultAuditLogs,
-          notifications: parsed.notifications || []
+          notifications: parsed.notifications || [],
+          chatbotTriggers: (parsed.chatbotTriggers && parsed.chatbotTriggers.length > 0)
+            ? parsed.chatbotTriggers
+            : defaultChatbotTriggers
         };
       }
     } catch (err) {
@@ -158,7 +164,8 @@ class Database {
           createdAt: new Date().toISOString(),
           type: 'order'
         }
-      ]
+      ],
+      chatbotTriggers: defaultChatbotTriggers
     };
 
     this.saveDirect(initial);
@@ -1101,6 +1108,102 @@ class Database {
       ordersByStatus: Object.entries(statusCountMap).map(([status, count]) => ({ status, count })),
       ordersByPaymentMethod: ordersByPaymentMethodMap
     };
+  }
+
+  // ===================== AI Chatbot Triggers & Auto-Responses =====================
+  getChatbotTriggers(onlyActive = false): ChatbotTrigger[] {
+    if (!this.data.chatbotTriggers) {
+      this.data.chatbotTriggers = [...defaultChatbotTriggers];
+      this.persist();
+    }
+    const list = onlyActive
+      ? this.data.chatbotTriggers.filter(t => t.active)
+      : [...this.data.chatbotTriggers];
+    return list.sort((a, b) => (b.priority || 0) - (a.priority || 0));
+  }
+
+  getChatbotTriggerById(id: string): ChatbotTrigger | undefined {
+    return this.getChatbotTriggers(false).find(t => t.id === id);
+  }
+
+  createChatbotTrigger(triggerData: Omit<ChatbotTrigger, 'id' | 'createdAt' | 'updatedAt' | 'hitCount'>): ChatbotTrigger {
+    if (!this.data.chatbotTriggers) {
+      this.data.chatbotTriggers = [...defaultChatbotTriggers];
+    }
+    const newTrigger: ChatbotTrigger = {
+      ...triggerData,
+      id: `trig-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      hitCount: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    this.data.chatbotTriggers.unshift(newTrigger);
+    this.persist();
+    return newTrigger;
+  }
+
+  updateChatbotTrigger(id: string, updates: Partial<ChatbotTrigger>): ChatbotTrigger | null {
+    if (!this.data.chatbotTriggers) {
+      this.data.chatbotTriggers = [...defaultChatbotTriggers];
+    }
+    const index = this.data.chatbotTriggers.findIndex(t => t.id === id);
+    if (index === -1) return null;
+    this.data.chatbotTriggers[index] = {
+      ...this.data.chatbotTriggers[index],
+      ...updates,
+      updatedAt: new Date().toISOString()
+    };
+    this.persist();
+    return this.data.chatbotTriggers[index];
+  }
+
+  deleteChatbotTrigger(id: string): boolean {
+    if (!this.data.chatbotTriggers) return false;
+    const lenBefore = this.data.chatbotTriggers.length;
+    this.data.chatbotTriggers = this.data.chatbotTriggers.filter(t => t.id !== id);
+    if (this.data.chatbotTriggers.length < lenBefore) {
+      this.persist();
+      return true;
+    }
+    return false;
+  }
+
+  recordTriggerHit(id: string): void {
+    if (!this.data.chatbotTriggers) return;
+    const trig = this.data.chatbotTriggers.find(t => t.id === id);
+    if (trig) {
+      trig.hitCount = (trig.hitCount || 0) + 1;
+      this.persist();
+    }
+  }
+
+  findMatchingTrigger(message: string): ChatbotTrigger | undefined {
+    const rawMessage = (message || '').toLowerCase().trim();
+    if (!rawMessage) return undefined;
+
+    const activeTriggers = this.getChatbotTriggers(true);
+
+    for (const rule of activeTriggers) {
+      if (!rule.triggers || rule.triggers.length === 0) continue;
+
+      for (const triggerItem of rule.triggers) {
+        const cleanTrigger = (triggerItem || '').toLowerCase().trim();
+        if (!cleanTrigger) continue;
+
+        if (rule.matchType === 'exact') {
+          if (rawMessage === cleanTrigger) {
+            return rule;
+          }
+        } else {
+          // 'contains' matching: check if user's sentence contains this trigger keyword or phrase
+          if (rawMessage.includes(cleanTrigger)) {
+            return rule;
+          }
+        }
+      }
+    }
+
+    return undefined;
   }
 }
 

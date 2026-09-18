@@ -13,6 +13,7 @@ import { MobileBottomNav } from './components/MobileBottomNav';
 import { AuthModal } from './components/AuthModal';
 import { OrderLookupModal } from './components/OrderLookupModal';
 import { NotificationsDrawer } from './components/NotificationsDrawer';
+import { ChatbotWidget } from './components/ChatbotWidget';
 
 // Customer Pages
 import { HomePage } from './pages/HomePage';
@@ -36,6 +37,7 @@ import { AdminPaymentMethods } from './pages/admin/AdminPaymentMethods';
 import { AdminPromoCodes } from './pages/admin/AdminPromoCodes';
 import { AdminOffers } from './pages/admin/AdminOffers';
 import { AdminSupport } from './pages/admin/AdminSupport';
+import { AdminChatbot } from './pages/admin/AdminChatbot';
 import { AdminAuditLogs } from './pages/admin/AdminAuditLogs';
 import { AdminSettings } from './pages/admin/AdminSettings';
 import { AdminStaff } from './pages/admin/AdminStaff';
@@ -68,6 +70,7 @@ const MainContent: React.FC = () => {
           {adminTab === 'promo-codes' && <AdminPromoCodes />}
           {adminTab === 'offers' && <AdminOffers />}
           {adminTab === 'support' && <AdminSupport />}
+          {adminTab === 'chatbot' && <AdminChatbot />}
           {adminTab === 'audit-logs' && <AdminAuditLogs />}
           {adminTab === 'settings' && <AdminSettings />}
           {adminTab === 'staff' && <AdminStaff />}
@@ -114,13 +117,14 @@ const MainContent: React.FC = () => {
       {/* Mobile Sticky Bottom Navigation (smart phone gamers) */}
       <MobileBottomNav />
 
-      {/* Global Modals */}
+      {/* Global Modals & Widgets */}
       <AuthModal />
       <OrderLookupModal />
       <NotificationsDrawer />
+      <ChatbotWidget />
 
       {/* Toast Notification Container */}
-      <div className="fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
+      <div className="fixed bottom-24 md:bottom-24 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
         {toasts.map((toast) => (
           <div
             key={toast.id}

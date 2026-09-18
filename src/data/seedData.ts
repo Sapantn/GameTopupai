@@ -9,7 +9,8 @@ import {
   User,
   Order,
   SupportTicket,
-  AuditLog
+  AuditLog,
+  ChatbotTrigger
 } from '../types';
 
 // High quality gaming vector artwork placeholders for offline resilience & fast loading
@@ -404,18 +405,6 @@ export const defaultPaymentMethods: PaymentMethod[] = [
     instructions: 'Bank: NIC Asia Bank Ltd\nBranch: New Road, Kathmandu\nAccount Name: GamingZone Nepal Private Limited\nAccount Number: 019283746501001\n\nTransfer via ConnectIPS or Mobile Banking, take receipt screenshot.',
     active: true,
     sortOrder: 5
-  },
-  {
-    id: 'pay-crypto',
-    code: 'crypto',
-    name: 'Cryptocurrency (USDT - TRC20 / BEP20)',
-    logoUrl: 'https://images.unsplash.com/photo-1622979135225-d2ba269bc1df?auto=format&fit=crop&w=120&q=80',
-    accountName: 'GamingZone Nepal USDT Escrow',
-    accountIdentifier: 'TRC20: TLqS89z...GamingZoneTRC20Escrow',
-    qrUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=TRC20:TLqS89z98xPzPzGamingZoneNepal',
-    instructions: '1. Calculate USDT equivalent (1 USDT ≈ NPR 138.50).\n2. Send exact USDT to TRC20 Address: TLqS89z98xPzPzGamingZoneNepalTRC20\n3. Provide TxHash (Transaction Hash) and screenshot.',
-    active: true,
-    sortOrder: 6
   }
 ];
 
@@ -948,3 +937,72 @@ export const defaultCatalogs: Catalog[] = [
     active: true
   }
 ];
+
+export const defaultChatbotTriggers: ChatbotTrigger[] = [
+  {
+    id: 'trig-discord',
+    name: 'Discord & Gamer Community',
+    triggers: ['discord', 'community', 'whatsapp group', 'facebook group', 'viber'],
+    matchType: 'contains',
+    reply: '🎮 **Join the GamingZone Nepal Gamer Community!**\n\nConnect with 5,000+ local gamers, catch exclusive flash giveaways, and get instant updates:\n\n• **Official Discord:** https://discord.gg/gamingzonenp\n• **WhatsApp Alert Channel:** https://chat.whatsapp.com/gamingzone\n• **Facebook Community:** https://facebook.com/groups/gamingzonenepal\n\nSee you inside the lobby! 🚀',
+    suggestions: ['Browse Games', 'Nepal Payment Methods', 'Track Order'],
+    active: true,
+    priority: 10,
+    hitCount: 14,
+    createdAt: '2026-03-01T00:00:00Z',
+    updatedAt: '2026-09-18T00:00:00Z'
+  },
+  {
+    id: 'trig-refund',
+    name: 'Refunds & Wrong Player ID',
+    triggers: ['refund', 'cancel', 'money back', 'wrong id', 'cancellation'],
+    matchType: 'contains',
+    reply: '🛡️ **Refund & Cancellation Policy**\n\n• **Pending/Processing Orders:** If delivery has not started, you can request an immediate refund back to your eSewa/Khalti wallet minus a 2% gateway processing fee.\n• **Completed Top-ups:** Due to direct crediting of in-game currency (UC, Diamonds), once delivered to the entered ID, orders cannot be revoked.\n• **Submitted Wrong ID?** WhatsApp our Kathmandu operations desk immediately at **+977 9841000001** before fulfillment begins!',
+    suggestions: ['Contact Support', 'Track My Order', 'View WhatsApp'],
+    active: true,
+    priority: 9,
+    hitCount: 22,
+    createdAt: '2026-03-01T00:00:00Z',
+    updatedAt: '2026-09-18T00:00:00Z'
+  },
+  {
+    id: 'trig-delivery-time',
+    name: 'Delivery Speed & Operating Time',
+    triggers: ['how long', 'delivery time', 'speed', 'operating hours', 'time taken', 'when will i get'],
+    matchType: 'contains',
+    reply: '⚡ **Delivery Guarantee: 5 to 15 Minutes**\n\n• **Kathmandu Operations Team:** Live 7 days a week from **8:00 AM – 11:30 PM NST**.\n• **Typical UC / Diamonds Turnaround:** 3–7 minutes once your eSewa, Khalti, or Fonepay receipt screenshot is verified.\n• **Late Night Orders:** Orders placed after 11:30 PM NST are fulfilled first thing in the 8:00 AM morning queue.',
+    suggestions: ['Check Order Status', 'Payment Methods', 'PUBG UC Packages'],
+    active: true,
+    priority: 8,
+    hitCount: 35,
+    createdAt: '2026-03-01T00:00:00Z',
+    updatedAt: '2026-09-18T00:00:00Z'
+  },
+  {
+    id: 'trig-roblox',
+    name: 'Roblox Robux in Nepal',
+    triggers: ['robux', 'roblox'],
+    matchType: 'contains',
+    reply: '🧱 **Roblox Robux & Gift Cards in Nepal (NPR)**\n\nWe provide 100% genuine Roblox Digital Gift Cards and direct Robux voucher codes:\n\n• **Instant Code Delivery:** Delivered directly to your order receipt and email.\n• **No International Card Needed:** Pay in NPR using eSewa, Khalti, or Fonepay.\n\nBrowse the Roblox card in our catalog to select your package!',
+    suggestions: ['Roblox Packages', 'eSewa Payment', 'How it Works'],
+    active: true,
+    priority: 7,
+    hitCount: 19,
+    createdAt: '2026-03-01T00:00:00Z',
+    updatedAt: '2026-09-18T00:00:00Z'
+  },
+  {
+    id: 'trig-discount',
+    name: 'Discounts & Promo Codes',
+    triggers: ['promo', 'coupon', 'discount', 'voucher', 'offer', 'cheap'],
+    matchType: 'contains',
+    reply: '🏷️ **Active Promo Codes & Discounts**\n\n• Use code **NEPALGAMER** at checkout for up to **10% OFF** your top-up.\n• We also run festival bonus top-ups (up to 20% extra UC/Diamonds) during Dashain, Tihar, and major tournaments.\n\nApply the promo code directly during step 4 of checkout!',
+    suggestions: ['View Offers', 'Browse Games', 'eSewa Payment'],
+    active: true,
+    priority: 6,
+    hitCount: 42,
+    createdAt: '2026-03-01T00:00:00Z',
+    updatedAt: '2026-09-18T00:00:00Z'
+  }
+];
+
