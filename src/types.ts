@@ -330,6 +330,9 @@ export interface ChatbotTrigger {
   updatedAt: string;
 }
 
+export type ThemeMode = 'dark' | 'light' | 'system';
+export type ResolvedTheme = 'dark' | 'light';
+
 export interface ServerAdminVerificationResult {
   allowed: boolean;
   reason?: 'UNAUTHENTICATED' | 'CUSTOMER_FORBIDDEN' | 'INSUFFICIENT_PERMISSIONS' | 'ACCOUNT_SUSPENDED' | 'SERVER_ERROR';

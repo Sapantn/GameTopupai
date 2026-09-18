@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { api } from '../lib/api';
+import { ThemeSettingsCard } from '../components/ThemeToggle';
 import {
   User,
   ShieldCheck,
@@ -192,6 +193,9 @@ export const ProfilePage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Theme & Display Preferences (Dark / Light / System) */}
+      <ThemeSettingsCard />
 
       {/* Edit Profile Modal */}
       {isEditing && (

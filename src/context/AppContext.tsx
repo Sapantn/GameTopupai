@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, Game, Order, WebsiteSettings, NotificationItem, UserRole } from '../types';
+import { User, Game, Order, WebsiteSettings, NotificationItem, UserRole, ThemeMode, ResolvedTheme } from '../types';
 import { api } from '../lib/api';
 
 export type AppView =
@@ -104,11 +104,61 @@ interface AppContextType {
   removeToast: (id: string) => void;
   navigateToGame: (game: Game) => void;
   navigateToOrder: (orderId: string) => void;
+  themeMode: ThemeMode;
+  resolvedTheme: ResolvedTheme;
+  setThemeMode: (mode: ThemeMode) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Theme state: dark, light, or system default
+  const [themeMode, setThemeModeState] = useState<ThemeMode>(() => {
+    try {
+      const saved = localStorage.getItem('gz_theme') as ThemeMode;
+      if (saved === 'dark' || saved === 'light' || saved === 'system') return saved;
+    } catch (e) {}
+    return 'system';
+  });
+
+  const [systemPrefersDark, setSystemPrefersDark] = useState<boolean>(() => {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return true;
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setSystemPrefersDark(mediaQuery.matches);
+    const handler = (e: MediaQueryListEvent) => {
+      setSystemPrefersDark(e.matches);
+    };
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
+
+  const resolvedTheme: ResolvedTheme = themeMode === 'system'
+    ? (systemPrefersDark ? 'dark' : 'light')
+    : themeMode;
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const root = document.documentElement;
+    root.setAttribute('data-theme', resolvedTheme);
+    root.classList.remove('dark', 'light');
+    root.classList.add(resolvedTheme);
+    root.style.colorScheme = resolvedTheme;
+  }, [resolvedTheme]);
+
+  const setThemeMode = (mode: ThemeMode) => {
+    setThemeModeState(mode);
+    try {
+      localStorage.setItem('gz_theme', mode);
+    } catch (e) {}
+  };
+
   // Load saved session or start as guest so visitors can cleanly sign up or sign in
   const [user, setUserState] = useState<User | null>(() => {
     try {
@@ -460,7 +510,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addToast,
         removeToast,
         navigateToGame,
-        navigateToOrder
+        navigateToOrder,
+        themeMode,
+        resolvedTheme,
+        setThemeMode
       }}
     >
       {children}

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import { ThemeToggleDropdown, ThemeSegmentedControl } from './ThemeToggle';
 import {
   Gamepad2,
   Search,
@@ -171,6 +172,9 @@ export const Navbar: React.FC = () => {
               <FileSearch className="w-3.5 h-3.5 text-cyan-400" />
               <span>Track Order</span>
             </button>
+
+            {/* Theme Toggle Switcher (Dark / Light / System) */}
+            <ThemeToggleDropdown />
 
             {/* Notifications Bell */}
             <button
@@ -366,6 +370,12 @@ export const Navbar: React.FC = () => {
                 {link.label}
               </button>
             ))}
+          </div>
+
+          {/* Mobile Theme Selector */}
+          <div className="pt-3 pb-1 border-t border-slate-800 flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-300">Theme Mode</span>
+            <ThemeSegmentedControl />
           </div>
 
           {/* Mobile Auth and Track Section */}

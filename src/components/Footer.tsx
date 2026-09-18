@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
+import { ThemeSegmentedControl } from './ThemeToggle';
 import {
   Gamepad2,
   Phone,
@@ -163,11 +164,16 @@ export const Footer: React.FC = () => {
           <p className="leading-relaxed">
             <strong className="text-slate-400">LEGAL NOTICE &amp; DISCLAIMER:</strong> GamingZone is an independent marketplace operated in Nepal for manual digital game vouchers and direct player ID credits. GamingZone is not affiliated with, endorsed by, or sponsored by Tencent Games, Krafton, Garena, Moonton, miHoYo / HoYoverse, Roblox Corporation, or any other game publishers. All trademarks, registered trademarks, logos, and game artwork shown on this site belong exclusively to their respective owners.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-3 border-t border-slate-900 text-slate-600">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-900 text-slate-600">
             <p>&copy; {new Date().getFullYear()} GamingZone Top-up Center Nepal. All Rights Reserved.</p>
-            <div className="flex items-center gap-4 text-slate-500 text-[11px]">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-slate-500 text-[11px]">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] uppercase font-semibold text-slate-400">Theme:</span>
+                <ThemeSegmentedControl />
+              </div>
+              <span className="text-slate-800 hidden sm:inline">•</span>
               <p className="font-gaming">
-                Currency: <strong className="text-slate-400">NPR (Nepalese Rupee)</strong>
+                Currency: <strong className="text-slate-400">NPR</strong>
               </p>
               <span className="text-slate-800">•</span>
               <button

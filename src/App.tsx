@@ -49,7 +49,7 @@ import { AdminRouteGuard } from './components/AdminRouteGuard';
 import { AlertTriangle, CheckCircle, Info, X, Zap } from 'lucide-react';
 
 const MainContent: React.FC = () => {
-  const { view, adminTab, toasts, removeToast, siteSettings } = useApp();
+  const { view, adminTab, toasts, removeToast, siteSettings, resolvedTheme } = useApp();
 
   // Scroll to top on view change
   useEffect(() => {
@@ -81,14 +81,22 @@ const MainContent: React.FC = () => {
 
   // Customer Storefront View
   return (
-    <div className="min-h-screen flex flex-col bg-[#0a0c16] text-slate-100 selection:bg-cyan-500 selection:text-black">
+    <div className={`min-h-screen flex flex-col transition-colors duration-150 ${
+      resolvedTheme === 'light'
+        ? 'bg-slate-50 text-slate-900 selection:bg-cyan-500 selection:text-white'
+        : 'bg-[#0a0c16] text-slate-100 selection:bg-cyan-500 selection:text-black'
+    }`}>
       
       {/* Top Announcement Bar */}
       {siteSettings?.announcementBanner && (
-        <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-cyan-900 py-1.5 px-4 text-center text-xs font-semibold text-white flex items-center justify-center gap-2 border-b border-cyan-500/20">
+        <div className={`py-1.5 px-4 text-center text-xs font-semibold flex items-center justify-center gap-2 border-b transition-colors ${
+          resolvedTheme === 'light'
+            ? 'bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white border-blue-400/30 shadow-sm'
+            : 'bg-gradient-to-r from-purple-900 via-indigo-900 to-cyan-900 text-white border-cyan-500/20'
+        }`}>
           <Zap className="w-3.5 h-3.5 text-yellow-300 animate-pulse" />
           <span>{siteSettings.announcementBanner}</span>
-          <span className="hidden sm:inline text-cyan-300 font-normal">
+          <span className="hidden sm:inline text-cyan-200 font-normal">
             &bull; Operational {siteSettings?.operatingHours || '8:00 AM – 11:30 PM NST (Kathmandu)'}
           </span>
         </div>
