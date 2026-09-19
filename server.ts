@@ -8,7 +8,7 @@ import { OrderStatus, User, UserRole } from './src/types';
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3000;
 
   // Middleware for parsing JSON with extended limit for base64 screenshot uploads
   app.use(express.json({ limit: '25mb' }));
